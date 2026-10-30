@@ -1,0 +1,364 @@
+============================= test session starts =============================
+platform win32 -- Python 3.14.0, pytest-9.1.1, pluggy-1.6.0 -- C:\Python314\python.exe
+cachedir: .pytest_cache
+rootdir: C:\Project\otomet
+plugins: anyio-4.12.1, asyncio-1.4.0
+asyncio: mode=Mode.STRICT, debug=False, asyncio_default_fixture_loop_scope=None, asyncio_default_test_loop_scope=function
+collecting ... collected 9 items
+
+tests/test_runs.py::TestCaps::test_port_unik PASSED                      [ 11%]
+tests/test_runs.py::TestCaps::test_klasifikasi PASSED                    [ 22%]
+tests/test_runs.py::TestData::test_klaim_atomik_beda_baris ERROR         [ 33%]
+tests/test_runs.py::TestData::test_tambah_validasi ERROR                 [ 44%]
+tests/test_runs.py::TestJalankan::test_paralel_dua_device_passed ERROR   [ 55%]
+tests/test_runs.py::TestJalankan::test_satu_gagal_lain_tetap_jalan ERROR [ 66%]
+tests/test_runs.py::TestJalankan::test_data_sama_ditolak ERROR           [ 77%]
+tests/test_runs.py::TestJalankan::test_gate_tertahan_blocked ERROR       [ 88%]
+tests/test_runs.py::TestBroadcastFisik::test_fisik_paralel_ok ERROR      [100%]
+
+=================================== ERRORS ====================================
+___________ ERROR at setup of TestData.test_klaim_atomik_beda_baris ___________
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x0000019617C83CE0>
+
+    @pytest_asyncio.fixture
+    async def test_db(monkeypatch):
+        db_uji = Database(TEST_DB_PATH)
+        await db_uji.connect()
+>       await db_uji.initialize_schema()
+
+tests\test_runs.py:19: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+backend\db\database.py:108: in initialize_schema
+    await self._connection.executescript(schema_sql)
+C:\Users\USER\AppData\Roaming\Python\Python314\site-packages\aiosqlite\core.py:225: in executescript
+    cursor = await self._execute(self._conn.executescript, sql_script)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Users\USER\AppData\Roaming\Python\Python314\site-packages\aiosqlite\core.py:132: in _execute
+    return await future
+           ^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <Connection(Thread-1, started 17248)>
+
+    def run(self) -> None:
+        """
+        Execute function calls on a separate thread.
+    
+        :meta private:
+        """
+        while True:
+            # Continues running until all queue items are processed,
+            # even after connection is closed (so we can finalize all
+            # futures)
+    
+            tx_item = self._tx.get()
+            if tx_item is _STOP_RUNNING_SENTINEL:
+                break
+    
+            future, function = tx_item
+    
+            try:
+                LOG.debug("executing %s", function)
+>               result = function()
+                         ^^^^^^^^^^
+E               sqlite3.OperationalError: index idx_clients_nama already exists
+
+C:\Users\USER\AppData\Roaming\Python\Python314\site-packages\aiosqlite\core.py:115: OperationalError
+_______________ ERROR at setup of TestData.test_tambah_validasi _______________
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x0000019617D64DD0>
+
+    @pytest_asyncio.fixture
+    async def test_db(monkeypatch):
+        db_uji = Database(TEST_DB_PATH)
+        await db_uji.connect()
+>       await db_uji.initialize_schema()
+
+tests\test_runs.py:19: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+backend\db\database.py:108: in initialize_schema
+    await self._connection.executescript(schema_sql)
+C:\Users\USER\AppData\Roaming\Python\Python314\site-packages\aiosqlite\core.py:225: in executescript
+    cursor = await self._execute(self._conn.executescript, sql_script)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Users\USER\AppData\Roaming\Python\Python314\site-packages\aiosqlite\core.py:132: in _execute
+    return await future
+           ^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <Connection(Thread-2, started 15152)>
+
+    def run(self) -> None:
+        """
+        Execute function calls on a separate thread.
+    
+        :meta private:
+        """
+        while True:
+            # Continues running until all queue items are processed,
+            # even after connection is closed (so we can finalize all
+            # futures)
+    
+            tx_item = self._tx.get()
+            if tx_item is _STOP_RUNNING_SENTINEL:
+                break
+    
+            future, function = tx_item
+    
+            try:
+                LOG.debug("executing %s", function)
+>               result = function()
+                         ^^^^^^^^^^
+E               sqlite3.OperationalError: index idx_clients_nama already exists
+
+C:\Users\USER\AppData\Roaming\Python\Python314\site-packages\aiosqlite\core.py:115: OperationalError
+________ ERROR at setup of TestJalankan.test_paralel_dua_device_passed ________
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x0000019617D54AF0>
+
+    @pytest_asyncio.fixture
+    async def test_db(monkeypatch):
+        db_uji = Database(TEST_DB_PATH)
+        await db_uji.connect()
+>       await db_uji.initialize_schema()
+
+tests\test_runs.py:19: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+backend\db\database.py:108: in initialize_schema
+    await self._connection.executescript(schema_sql)
+C:\Users\USER\AppData\Roaming\Python\Python314\site-packages\aiosqlite\core.py:225: in executescript
+    cursor = await self._execute(self._conn.executescript, sql_script)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Users\USER\AppData\Roaming\Python\Python314\site-packages\aiosqlite\core.py:132: in _execute
+    return await future
+           ^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <Connection(Thread-3, started 10376)>
+
+    def run(self) -> None:
+        """
+        Execute function calls on a separate thread.
+    
+        :meta private:
+        """
+        while True:
+            # Continues running until all queue items are processed,
+            # even after connection is closed (so we can finalize all
+            # futures)
+    
+            tx_item = self._tx.get()
+            if tx_item is _STOP_RUNNING_SENTINEL:
+                break
+    
+            future, function = tx_item
+    
+            try:
+                LOG.debug("executing %s", function)
+>               result = function()
+                         ^^^^^^^^^^
+E               sqlite3.OperationalError: index idx_clients_nama already exists
+
+C:\Users\USER\AppData\Roaming\Python\Python314\site-packages\aiosqlite\core.py:115: OperationalError
+_______ ERROR at setup of TestJalankan.test_satu_gagal_lain_tetap_jalan _______
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x0000019618ED8A50>
+
+    @pytest_asyncio.fixture
+    async def test_db(monkeypatch):
+        db_uji = Database(TEST_DB_PATH)
+        await db_uji.connect()
+>       await db_uji.initialize_schema()
+
+tests\test_runs.py:19: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+backend\db\database.py:108: in initialize_schema
+    await self._connection.executescript(schema_sql)
+C:\Users\USER\AppData\Roaming\Python\Python314\site-packages\aiosqlite\core.py:225: in executescript
+    cursor = await self._execute(self._conn.executescript, sql_script)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Users\USER\AppData\Roaming\Python\Python314\site-packages\aiosqlite\core.py:132: in _execute
+    return await future
+           ^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <Connection(Thread-4, started 3980)>
+
+    def run(self) -> None:
+        """
+        Execute function calls on a separate thread.
+    
+        :meta private:
+        """
+        while True:
+            # Continues running until all queue items are processed,
+            # even after connection is closed (so we can finalize all
+            # futures)
+    
+            tx_item = self._tx.get()
+            if tx_item is _STOP_RUNNING_SENTINEL:
+                break
+    
+            future, function = tx_item
+    
+            try:
+                LOG.debug("executing %s", function)
+>               result = function()
+                         ^^^^^^^^^^
+E               sqlite3.OperationalError: index idx_clients_nama already exists
+
+C:\Users\USER\AppData\Roaming\Python\Python314\site-packages\aiosqlite\core.py:115: OperationalError
+____________ ERROR at setup of TestJalankan.test_data_sama_ditolak ____________
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x0000019618E2CE60>
+
+    @pytest_asyncio.fixture
+    async def test_db(monkeypatch):
+        db_uji = Database(TEST_DB_PATH)
+        await db_uji.connect()
+>       await db_uji.initialize_schema()
+
+tests\test_runs.py:19: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+backend\db\database.py:108: in initialize_schema
+    await self._connection.executescript(schema_sql)
+C:\Users\USER\AppData\Roaming\Python\Python314\site-packages\aiosqlite\core.py:225: in executescript
+    cursor = await self._execute(self._conn.executescript, sql_script)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Users\USER\AppData\Roaming\Python\Python314\site-packages\aiosqlite\core.py:132: in _execute
+    return await future
+           ^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <Connection(Thread-5, started 15424)>
+
+    def run(self) -> None:
+        """
+        Execute function calls on a separate thread.
+    
+        :meta private:
+        """
+        while True:
+            # Continues running until all queue items are processed,
+            # even after connection is closed (so we can finalize all
+            # futures)
+    
+            tx_item = self._tx.get()
+            if tx_item is _STOP_RUNNING_SENTINEL:
+                break
+    
+            future, function = tx_item
+    
+            try:
+                LOG.debug("executing %s", function)
+>               result = function()
+                         ^^^^^^^^^^
+E               sqlite3.OperationalError: index idx_clients_nama already exists
+
+C:\Users\USER\AppData\Roaming\Python\Python314\site-packages\aiosqlite\core.py:115: OperationalError
+__________ ERROR at setup of TestJalankan.test_gate_tertahan_blocked __________
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x0000019617DFA6D0>
+
+    @pytest_asyncio.fixture
+    async def test_db(monkeypatch):
+        db_uji = Database(TEST_DB_PATH)
+        await db_uji.connect()
+>       await db_uji.initialize_schema()
+
+tests\test_runs.py:19: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+backend\db\database.py:108: in initialize_schema
+    await self._connection.executescript(schema_sql)
+C:\Users\USER\AppData\Roaming\Python\Python314\site-packages\aiosqlite\core.py:225: in executescript
+    cursor = await self._execute(self._conn.executescript, sql_script)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Users\USER\AppData\Roaming\Python\Python314\site-packages\aiosqlite\core.py:132: in _execute
+    return await future
+           ^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <Connection(Thread-6, started 16828)>
+
+    def run(self) -> None:
+        """
+        Execute function calls on a separate thread.
+    
+        :meta private:
+        """
+        while True:
+            # Continues running until all queue items are processed,
+            # even after connection is closed (so we can finalize all
+            # futures)
+    
+            tx_item = self._tx.get()
+            if tx_item is _STOP_RUNNING_SENTINEL:
+                break
+    
+            future, function = tx_item
+    
+            try:
+                LOG.debug("executing %s", function)
+>               result = function()
+                         ^^^^^^^^^^
+E               sqlite3.OperationalError: index idx_clients_nama already exists
+
+C:\Users\USER\AppData\Roaming\Python\Python314\site-packages\aiosqlite\core.py:115: OperationalError
+_________ ERROR at setup of TestBroadcastFisik.test_fisik_paralel_ok __________
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x0000019617C9AB10>
+
+    @pytest_asyncio.fixture
+    async def test_db(monkeypatch):
+        db_uji = Database(TEST_DB_PATH)
+        await db_uji.connect()
+>       await db_uji.initialize_schema()
+
+tests\test_runs.py:19: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+backend\db\database.py:108: in initialize_schema
+    await self._connection.executescript(schema_sql)
+C:\Users\USER\AppData\Roaming\Python\Python314\site-packages\aiosqlite\core.py:225: in executescript
+    cursor = await self._execute(self._conn.executescript, sql_script)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Users\USER\AppData\Roaming\Python\Python314\site-packages\aiosqlite\core.py:132: in _execute
+    return await future
+           ^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <Connection(Thread-7, started 7316)>
+
+    def run(self) -> None:
+        """
+        Execute function calls on a separate thread.
+    
+        :meta private:
+        """
+        while True:
+            # Continues running until all queue items are processed,
+            # even after connection is closed (so we can finalize all
+            # futures)
+    
+            tx_item = self._tx.get()
+            if tx_item is _STOP_RUNNING_SENTINEL:
+                break
+    
+            future, function = tx_item
+    
+            try:
+                LOG.debug("executing %s", function)
+>               result = function()
+                         ^^^^^^^^^^
+E               sqlite3.OperationalError: index idx_clients_nama already exists
+
+C:\Users\USER\AppData\Roaming\Python\Python314\site-packages\aiosqlite\core.py:115: OperationalError
+=========================== short test summary info ===========================
+ERROR tests/test_runs.py::TestData::test_klaim_atomik_beda_baris - sqlite3.Op...
+ERROR tests/test_runs.py::TestData::test_tambah_validasi - sqlite3.Operationa...
+ERROR tests/test_runs.py::TestJalankan::test_paralel_dua_device_passed - sqli...
+ERROR tests/test_runs.py::TestJalankan::test_satu_gagal_lain_tetap_jalan - sq...
+ERROR tests/test_runs.py::TestJalankan::test_data_sama_ditolak - sqlite3.Oper...
+ERROR tests/test_runs.py::TestJalankan::test_gate_tertahan_blocked - sqlite3....
+ERROR tests/test_runs.py::TestBroadcastFisik::test_fisik_paralel_ok - sqlite3...
+========================= 2 passed, 7 errors in 0.84s =========================

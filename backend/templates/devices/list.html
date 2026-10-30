@@ -1,0 +1,372 @@
+{% extends "base.html" %}
+{% block title %}HP Live — Stream + Kontrol - Otomet{% endblock %}
+{% block content %}
+<div class="space-y-4">
+<div class="bg-white shadow rounded-lg p-4">
+<div class="flex flex-wrap items-center justify-between gap-2">
+<div>
+<h2 class="text-xl font-bold text-gray-900">HP Live <span class="text-sm font-normal text-green-600">STREAM</span></h2>
+<p id="pesan" class="text-sm text-gray-600">Menghubungkan...</p>
+<p class="text-xs text-gray-400">Klik gambar = tap • Geser di gambar = swipe • Stream MJPEG ~0,5 fps via WiFi (batas screenshot ADB 2–3 dtk/frame, bukan video 30fps — untuk realtime penuh pakai scrcpy USB).</p>
+</div>
+<div class="flex items-center gap-2 text-sm">
+<label class="text-xs text-gray-500">Kualitas</label>
+<select id="stream-q" onchange="gantiKualitas()" class="border rounded px-2 py-1.5 text-xs" title="Stream MJPEG via screenshot ADB (~2-3 dtk/frame via WiFi). Hemat = paling cepat terasa live.">
+<option value="lebar=240&kualitas=30&fps=5">Hemat (paling lancar)</option>
+<option value="lebar=320&kualitas=35&fps=3" selected>Standar</option>
+<option value="lebar=480&kualitas=45&fps=2">Tajam (paling patah)</option>
+</select>
+<span id="auto-dot" class="px-2 py-1 rounded bg-green-100 text-green-800 text-xs">Auto-refresh ON</span>
+<button onclick="toggleAuto()" id="btn-auto" class="px-3 py-1.5 text-xs bg-gray-100 rounded">Jeda</button>
+<button onclick="muat(true)" class="px-3 py-1.5 text-xs bg-blue-600 text-white rounded">Refresh</button>
+</div>
+</div>
+<div class="mt-3 flex flex-wrap items-center gap-2 text-sm">
+<input id="url-global" value="https://example.com" class="border rounded px-2 py-1.5 text-sm w-64 font-mono">
+<button onclick="bukaSemua()" class="px-3 py-1.5 text-xs bg-sky-600 text-white rounded">Buka URL di Semua HP</button>
+<button onclick="ujiNyata()" id="btn-uji" class="px-3 py-1.5 text-xs bg-purple-600 text-white rounded">Jalankan Uji Nyata 2 HP</button>
+<button onclick="sinkron()" class="px-3 py-1.5 text-xs bg-green-600 text-white rounded">Pakai Semua HP</button>
+<button onclick="bebaskan()" class="px-3 py-1.5 text-xs bg-amber-500 text-white rounded">Bebaskan Macet</button>
+</div>
+<p id="aksi-pesan" class="text-xs mt-2 text-gray-600"></p>
+<div id="uji-box" class="mt-2 text-xs hidden bg-purple-50 border border-purple-200 rounded p-2"></div>
+<div id="sesi-box" class="mt-2 text-xs hidden bg-amber-50 border border-amber-200 rounded p-2"></div>
+</div>
+<div id="grid" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4"></div>
+<div class="bg-white shadow rounded-lg p-4 text-sm">
+<div class="flex flex-wrap items-center justify-between gap-2">
+<div><b>Log Perintah Live</b> <span class="text-xs text-gray-500">tap/swipe/type/key/open + latensi ADB (ms). Hijau=OK, merah=GAGAL.</span></div>
+<div class="flex gap-1.5 items-center">
+<button onclick="muatLog()" class="px-2 py-1 text-xs bg-gray-100 rounded">Refresh Log</button>
+<button onclick="salinLog(this)" class="px-2 py-1 text-xs bg-blue-600 text-white rounded" title="Salin semua baris log sebagai teks (tempel ke chat/laporan)">Salin Log</button>
+<button onclick="unduhLog()" class="px-2 py-1 text-xs bg-gray-100 rounded" title="Unduh log sebagai file .txt">Unduh</button>
+<button onclick="bersihkanLog()" class="px-2 py-1 text-xs bg-red-100 text-red-700 rounded">Bersihkan</button>
+<span id="salin-status" class="text-[11px] text-gray-400"></span>
+</div>
+</div>
+<div id="log-list" class="mt-2 text-xs font-mono space-y-1 max-h-56 overflow-y-auto bg-gray-900 text-green-300 rounded p-2"><div class="text-gray-400">Belum ada perintah. Klik / geser gambar HP untuk menguji.</div></div>
+<p class="text-[11px] text-gray-500 mt-1">Cara baca: <code>tap 192.168... (360,800) → 45ms OK</code> = GUI→server→HP sukses 45ms. Bila <code>GAGAL</code> = pesan error ADB tampil. Bila ms &gt; 2000 = latensi WiFi/ADB tinggi, HP terasa lambat walau perintah sampai.</p>
+</div>
+<div id="offline-box" class="hidden bg-white shadow rounded-lg p-4 text-sm"></div>
+<details class="bg-white shadow rounded-lg p-4 text-sm text-gray-600">
+<summary class="cursor-pointer font-medium text-gray-900">Bantuan (klik bila HP tak muncul / gagal)</summary>
+<ul class="list-disc ml-5 mt-2 space-y-1 text-xs">
+<li>HP + PC satu WiFi. Di PC: <code>adb connect IP:PORT</code>.</li>
+<li>Redmi/MIUI: aktifkan USB debugging + Install via USB + <b>USB debugging (Security settings)</b>, ketuk Allow saat popup muncul. <b>Bila tap/swipe/tombol merah INJECT_EVENTS tapi buka-URL hijau:</b> itu persis gejala izin ini belum ON — aktifkan di <code>Setelan &gt; Opsi Pengembang</code> (login akun Mi bila diminta), lalu di PC <code>adb disconnect</code> + <code>adb connect IP:PORT</code> ulang.</li>
+<li>Tombol Bebaskan Macet = selesaikan sesi nyangkut + kembalikan HP ke idle (aman).</li>
+<li>Hasil uji tercatat: klik Runs / Laporan setelah uji selesai.</li>
+</ul>
+</details>
+</div>
+{% endblock %}
+{% block scripts %}
+<script>
+let OTOMATIS=true, SEDANG_UJI=false, SUDAH_SYNC=false;
+let KARTU={}, UKURAN={};
+function streamQ(){const s=document.getElementById('stream-q');return (s&&s.value)||'lebar=320&kualitas=35&fps=3';}
+function streamURL(serial){return '/api/orchestrator/devices/stream?serial='+encodeURIComponent(serial)+'&'+streamQ()+'&_='+Date.now();}
+function gantiKualitas(){document.querySelectorAll('img[id^="img-"]').forEach(im=>{const s=im.id.replace('img-','');im.src=streamURL(s);});}
+function restartStream(serial){const im=document.getElementById('img-'+serial);if(im){im.src=streamURL(serial);msg(serial,'stream di-restart...');}}
+function streamError(serial){const m=document.getElementById('msg-'+serial);if(m)m.textContent='stream terputus — sambung ulang 3 dtk...';setTimeout(()=>{const im=document.getElementById('img-'+serial);if(im&&document.body.contains(im))im.src=streamURL(serial);},3000);}
+let FPS_HIT={};
+function streamOK(serial){const kini=Date.now();const dulu=FPS_HIT[serial]||0;FPS_HIT[serial]=kini;const el=document.getElementById('fps-'+serial);if(!el)return;if(dulu){const dt=(kini-dulu)/1000;const fps=dt>0?(1/dt):0;el.textContent='• live '+fps.toFixed(1)+' fps';}else{el.textContent='• live';}}
+function esc(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+function msg(serial,t){const m=document.getElementById('msg-'+serial);if(m)m.textContent=t;}
+const grid=()=>document.getElementById('grid');
+const pesan=()=>document.getElementById('pesan');
+const apesan=()=>document.getElementById('aksi-pesan');
+function badgeStatus(s){
+  if(s==='idle') return '<span class="px-2 py-0.5 text-xs rounded bg-blue-100 text-blue-800">idle</span>';
+  if(s==='busy') return '<span class="px-2 py-0.5 text-xs rounded bg-yellow-100 text-yellow-800">busy</span>';
+  if(s==='offline') return '<span class="px-2 py-0.5 text-xs rounded bg-red-100 text-red-800">offline</span>';
+  return '<span class="px-2 py-0.5 text-xs rounded bg-gray-200 text-gray-700">'+s+'</span>';
+}
+function toggleAuto(){
+  OTOMATIS=!OTOMATIS;
+  const d=document.getElementById('auto-dot');
+  d.textContent=OTOMATIS?'Auto-refresh ON':'Auto-refresh OFF';
+  document.getElementById('btn-auto').textContent=OTOMATIS?'Jeda':'Jalan';
+  if(OTOMATIS) muat(true);
+}
+async function api(url,opt){
+  const r=await fetch(url,opt); const t=await r.text();
+  let d={}; try{d=JSON.parse(t);}catch(e){d={raw:t};}
+  if(!r.ok){let m=t||String(r.status);try{if(d&&typeof d.detail==='object'){m=String(d.detail.error||d.detail.alasan||t).slice(0,400);if(d.detail.kode)m+=' [kode:'+d.detail.kode+']';if(d.detail.panduan&&d.detail.panduan.length)m+=' | Solusi: '+d.detail.panduan[0];}else{m=String(d.detail||d.alasan||t||r.status).slice(0,400);}}catch(e){}throw new Error(m);}
+  return d;
+}
+function kartuHTML(k){
+  const sid=k.serial;
+  const bat=(k.baterai==null?'?':k.baterai+'%');
+  const layar=k.layar_nyala===true?'Nyala':k.layar_nyala===false?'Mati':'?';
+  return '<div class="bg-white shadow rounded-lg overflow-hidden" id="card-'+sid+'">'
+  +'<div class="bg-gray-900 relative" id="wrap-'+sid+'" style="touch-action:none;cursor:crosshair">'
+  +'<img id="img-'+sid+'" src="'+streamURL(sid)+'" onload="streamOK(\''+sid+'\')" onerror="streamError(\''+sid+'\')" class="w-full object-contain mx-auto" style="height:380px" draggable="false" alt="stream '+sid+'">'
+  +'<span class="absolute top-2 left-2 px-2 py-0.5 text-xs rounded bg-black/60 text-white font-mono">'+sid+'</span>'
+  +'<span class="absolute top-2 right-2" data-badge>'+badgeStatus(k.status)+'</span>'
+  +'<span id="fps-'+sid+'" class="absolute top-2 left-1/2 -translate-x-1/2 px-2 py-0.5 text-[10px] rounded bg-black/60 text-green-300 font-mono">• live</span>'
+  +'<button onclick="restartStream(\''+sid+'\')" title="Sambung ulang stream bila macet" class="absolute bottom-1 right-1 px-1.5 py-0.5 text-[10px] rounded bg-black/60 text-white">↻ stream</button>'
+  +'<span class="absolute bottom-1 left-1 text-[10px] px-1.5 py-0.5 rounded bg-black/60 text-white">klik=tap geser=swipe</span>'
+  +'<span id="dot-'+sid+'" class="absolute hidden w-4 h-4 rounded-full bg-green-400/80 border border-white" style="transform:translate(-50%,-50%)"></span></div>'
+  +'<div class="p-3 text-sm space-y-1.5">'
+  +'<p class="text-xs text-gray-600" data-meta>Model <b>'+k.model+'</b> Baterai <b>'+bat+'</b> Layar <b>'+layar+'</b></p>'
+  +'<div class="flex flex-wrap gap-1.5">'
+  +'<button onclick="tombol(\''+sid+'\',\'wake\')" class="px-2 py-1 text-xs bg-gray-100 rounded">Wake</button>'
+  +'<button onclick="tombol(\''+sid+'\',\'home\')" class="px-2 py-1 text-xs bg-gray-100 rounded">Home</button>'
+  +'<button onclick="tombol(\''+sid+'\',\'back\')" class="px-2 py-1 text-xs bg-gray-100 rounded">Back</button>'
+  +'<button onclick="tombol(\''+sid+'\',\'recent\')" class="px-2 py-1 text-xs bg-gray-100 rounded">Recent</button>'
+  +'<button onclick="tombol(\''+sid+'\',\'vol_up\')" class="px-2 py-1 text-xs bg-gray-100 rounded">Vol+</button>'
+  +'<button onclick="tombol(\''+sid+'\',\'vol_down\')" class="px-2 py-1 text-xs bg-gray-100 rounded">Vol-</button>'
+  +'<button onclick="bukaSatu(\''+sid+'\')" class="px-2 py-1 text-xs bg-sky-600 text-white rounded">Buka URL</button>'
+  +'<button onclick="cekIzin(\''+sid+'\')" title="Cek izin INJECT_EVENTS tanpa ubah layar" class="px-2 py-1 text-xs bg-amber-100 text-amber-800 rounded">Cek Izin</button>'
+  +'<button onclick="ukurFps(\''+sid+'\')" title="Ukur latensi screenshot sekali (bukti fps jujur)" class="px-2 py-1 text-xs bg-gray-100 rounded">Ukur FPS</button>'
+  +'</div>'
+  +'<div class="flex gap-1.5">'
+  +'<input id="ketik-'+sid+'" placeholder="ketik di HP..." class="flex-1 border rounded px-2 py-1 text-xs font-mono">'
+  +'<button onclick="kirimKetik(\''+sid+'\')" class="px-2 py-1 text-xs bg-blue-600 text-white rounded">Kirim</button>'
+  +'<button onclick="tombol(\''+sid+'\',\'enter\')" class="px-2 py-1 text-xs bg-gray-100 rounded">Enter</button>'
+  +'<button onclick="tombol(\''+sid+'\',\'del\')" class="px-2 py-1 text-xs bg-gray-100 rounded">Del</button>'
+  +'</div><p id="msg-'+sid+'" class="text-xs text-gray-500"></p></div></div>';
+}
+async function ukuranHp(serial){
+  if(UKURAN[serial])return UKURAN[serial];
+  const d=await api('/api/orchestrator/devices/size?serial='+encodeURIComponent(serial));
+  UKURAN[serial]={w:d.lebar,h:d.tinggi};
+  return UKURAN[serial];
+}
+function petakan(serial,img,cx,cy){
+  const uk=UKURAN[serial]; if(!uk) return null;
+  const r=img.getBoundingClientRect();
+  const iw=img.naturalWidth||uk.w, ih=img.naturalHeight||uk.h;
+  if(!iw||!ih||r.width<2||r.height<2) return null;
+  const s=Math.min(r.width/iw,r.height/ih);
+  const dw=iw*s, dh=ih*s;
+  const ox=r.left+(r.width-dw)/2, oy=r.top+(r.height-dh)/2;
+  const diLuar=(cx<ox||cx>ox+dw||cy<oy||cy>oy+dh);
+  const x=Math.max(0,Math.min(uk.w-1,Math.round((cx-ox)/dw*uk.w)));
+  const y=Math.max(0,Math.min(uk.h-1,Math.round((cy-oy)/dh*uk.h)));
+  return {x:x,y:y,diLuar:diLuar};
+}
+function posisiDot(serial,cx,cy){
+  const wrap=document.getElementById('wrap-'+serial);
+  if(!wrap) return null;
+  const r=wrap.getBoundingClientRect();
+  return {lx:cx-r.left,ly:cy-r.top};
+}
+function titik(serial,lx,ly){
+  const dot=document.getElementById('dot-'+serial);
+  if(!dot)return;
+  dot.style.left=lx+'px';dot.style.top=ly+'px';
+  dot.classList.remove('hidden');
+  setTimeout(()=>dot.classList.add('hidden'),400);
+}
+function pasangSentuh(serial){
+  const wrap=document.getElementById('wrap-'+serial);
+  const img=document.getElementById('img-'+serial);
+  if(!wrap||!img||wrap.dataset.sentuh)return;
+  wrap.dataset.sentuh='1';
+  let x0=0,y0=0,t0=0,aktif=false;
+  wrap.addEventListener('pointerdown',e=>{aktif=true;t0=Date.now();x0=e.clientX;y0=e.clientY;try{wrap.setPointerCapture(e.pointerId);}catch(err){}e.preventDefault();});
+  wrap.addEventListener('pointerup',async e=>{
+    if(!aktif)return;aktif=false;
+    let uk=UKURAN[serial];
+    if(!uk){try{uk=await ukuranHp(serial);}catch(err){msg(serial,'Gagal ukuran layar (/devices/size): cek ADB');return;}}
+    const dx=e.clientX-x0,dy=e.clientY-y0,dt=Date.now()-t0;
+    if(Math.hypot(dx,dy)<12&&dt<600){
+      const p=petakan(serial,img,e.clientX,e.clientY);
+      if(!p){msg(serial,'Gambar belum siap, coba lagi.');return;}
+      const pd=posisiDot(serial,e.clientX,e.clientY);
+      if(pd)titik(serial,pd.lx,pd.ly);
+      msg(serial,'tap '+p.x+','+p.y+' → kirim...'+(p.diLuar?' (klik di bingkai hitam, dijepit)':''));
+      const t0k=Date.now();
+      try{const d=await api('/api/orchestrator/devices/tap',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({serial:serial,x:p.x,y:p.y})});const ms=(d&&d.ms!=null)?d.ms:(Date.now()-t0k);msg(serial,'tap '+p.x+','+p.y+' OK ('+ms+'ms) — cek layar HP berubah.');}
+      catch(err){msg(serial,'Gagal tap: '+err.message+' — lihat Log Live di bawah.');}
+      muatLog();
+    }else{
+      const a=petakan(serial,img,x0,y0), b=petakan(serial,img,e.clientX,e.clientY);
+      if(!a||!b){msg(serial,'Gambar belum siap, coba lagi.');return;}
+      msg(serial,'swipe ('+a.x+','+a.y+')->('+b.x+','+b.y+') → kirim...');
+      try{const d=await api('/api/orchestrator/devices/swipe',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({serial:serial,sx:a.x,sy:a.y,ex:b.x,ey:b.y,dur_ms:300})});const ms=(d&&d.ms!=null)?d.ms:'?';msg(serial,'swipe OK ('+ms+'ms) — cek layar HP berubah.');}
+      catch(err){msg(serial,'Gagal swipe: '+err.message+' — lihat Log Live di bawah.');}
+      muatLog();
+    }
+  });
+  wrap.addEventListener('pointercancel',()=>{aktif=false;});
+  wrap.addEventListener('dragstart',e=>e.preventDefault());
+}
+async function muat(manual){
+  try{
+    if(!SUDAH_SYNC){SUDAH_SYNC=true;try{await api('/api/orchestrator/devices/sync',{method:'POST'});}catch(e){}}
+    const d=await api('/api/orchestrator/devices/live');
+    const live=d.live||[], kartu=d.kartu||[];
+    pesan().textContent=live.length?(live.length+' HP stream '+new Date().toLocaleTimeString()):'Belum ada HP terdeteksi.';
+    const g=grid();
+    if(!live.length){g.innerHTML='<div class="col-span-full bg-white shadow rounded-lg p-8 text-center text-sm text-gray-500">Belum ada HP. <code>adb connect IP:PORT</code> lalu Refresh.</div>';}
+    else{
+      const ada=new Set([...g.querySelectorAll('[id^="card-"]')].map(e=>e.id.replace('card-','')));
+      const baru=new Set(live);
+      [...ada].forEach(s=>{if(!baru.has(s)){document.getElementById('card-'+s)?.remove();}});
+      kartu.forEach(k=>{
+        let el=document.getElementById('card-'+k.serial);
+        if(!el){g.insertAdjacentHTML('beforeend',kartuHTML(k));pasangSentuh(k.serial);ikatKetik(k.serial);}
+        else{
+          el.querySelector('[data-badge]').innerHTML=badgeStatus(k.status);
+          const bat=(k.baterai==null?'?':k.baterai+'%');
+          const lyr=k.layar_nyala===true?'Nyala':k.layar_nyala===false?'Mati':'?';
+          const meta=el.querySelector('[data-meta]');
+          if(meta)meta.innerHTML='Model <b>'+esc(k.model)+'</b> Baterai <b>'+bat+'</b> Layar <b>'+lyr+'</b>';
+        }
+      });
+    }
+    muatSesi(); muatOffline();
+  }catch(e){pesan().textContent='Gagal memuat: '+e.message;}
+}
+async function muatSesi(){
+  try{
+    const s=await api('/api/orchestrator/sessions/active');
+    const box=document.getElementById('sesi-box');
+    if((s.total||0)>0){box.classList.remove('hidden');
+      box.innerHTML='<b>'+s.total+' sesi running:</b> '+s.running.map(x=>'#'+x.id+' ('+(x.adb_a||'?')+' + '+(x.adb_b||'?')+')').join(', ');}
+    else box.classList.add('hidden');
+  }catch(e){}
+}
+async function muatOffline(){
+  try{
+    const all=await api('/api/orchestrator/devices');
+    const live=await api('/api/orchestrator/devices/adb');
+    const ls=new Set(live.live||[]);
+    const off=(all||[]).filter(d=>!ls.has(d.adb_id));
+    const box=document.getElementById('offline-box');
+    if(!off.length){box.classList.add('hidden');return;}
+    box.classList.remove('hidden');
+    box.innerHTML='<b>Di DB tapi tak terlihat ('+off.length+'):</b> '+off.map(d=>'<span class="ml-2 font-mono text-xs">'+d.adb_id+' ('+d.status+') <button onclick="hapusDb('+d.id+')" class="px-1.5 py-0.5 bg-red-100 text-red-700 rounded">Hapus</button></span>').join('');
+  }catch(e){}
+}
+async function sinkron(){apesan().textContent='Mendaftarkan HP...';try{const d=await api('/api/orchestrator/devices/sync',{method:'POST'});apesan().textContent='Siap: '+d.live.length+' terdeteksi, '+d.baru.length+' baru.';await muat();}catch(e){apesan().textContent='Gagal: '+e.message;}}
+async function bebaskan(){apesan().textContent='Membebaskan...';try{const d=await api('/api/orchestrator/sessions/bebaskan',{method:'POST'});apesan().textContent='Bebas: '+d.selesai.length+' sesi.';await muat();}catch(e){apesan().textContent='Gagal: '+e.message;}}
+async function hapusDb(id){if(!confirm('Hapus device #'+id+'?'))return;try{await api('/api/orchestrator/devices/'+id,{method:'DELETE'});muatOffline();}catch(e){alert(e.message);}}
+function ikatKetik(serial){
+  const inp=document.getElementById('ketik-'+serial);
+  if(!inp||inp.dataset.ikat)return;
+  inp.dataset.ikat='1';
+  inp.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();kirimKetik(serial);}});
+}
+async function cekIzin(serial){
+  const m=document.getElementById('msg-'+serial); if(m)m.textContent='Cek izin input...';
+  try{const d=await api('/api/orchestrator/devices/input-diagnose?serial='+encodeURIComponent(serial));
+    if(d.bisa_input){if(m)m.textContent='Izin OK ('+(d.model||'?')+' Android '+(d.android||'?')+') — tap/swipe seharusnya bisa.';}
+    else{if(m)m.textContent='Izin BERMASALAH ['+(d.kode||'?')+']: '+(d.alasan||'?')+' — ' + ((d.solusi||[])[2]||'aktifkan Security settings');}
+  }catch(e){if(m)m.textContent='Gagal cek izin: '+e.message;}
+  muatLog();
+}
+async function ukurFps(serial){
+  const m=document.getElementById('msg-'+serial); if(m)m.textContent='Ukur latensi screenshot...';
+  try{const d=await api('/api/orchestrator/devices/stream-info?serial='+encodeURIComponent(serial));
+    if(d.ok){if(m)m.textContent='Screenshot '+d.ms+'ms (~'+d.perkiraan_fps+'fps, '+d.ukuran_bytes+' byte). Batas WiFi — 30fps butuh scrcpy USB.'; const el=document.getElementById('fps-'+serial); if(el)el.textContent='\u2022 '+d.perkiraan_fps+' fps (ukur)';}
+    else{if(m)m.textContent='Ukur gagal: '+(d.alasan||'?');}
+  }catch(e){if(m)m.textContent='Gagal ukur: '+e.message;}
+}
+async function tombol(serial,nama){
+  const m=document.getElementById('msg-'+serial); if(m)m.textContent=nama+' → kirim...';
+  try{const d=await api('/api/orchestrator/devices/key',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({serial:serial,tombol:nama})});const ms=(d&&d.ms!=null)?d.ms:'?';if(m)m.textContent=nama+' OK ('+ms+'ms) — cek layar HP.';}
+  catch(e){if(m)m.textContent='Gagal '+nama+': '+e.message+' — lihat Log Live.';}
+  muatLog();
+}
+async function kirimKetik(serial){
+  const inp=document.getElementById('ketik-'+serial);
+  const t=(inp&&inp.value)||'';
+  if(!t.trim()){msg(serial,'Teks kosong.');return;}
+  msg(serial,'mengetik "'+t.slice(0,30)+'" → kirim...');
+  try{const d=await api('/api/orchestrator/devices/type',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({serial:serial,teks:t})});const ms=(d&&d.ms!=null)?d.ms:'?';msg(serial,'terketik ('+ms+'ms) — cek layar HP.');inp.value='';}
+  catch(e){msg(serial,'Gagal ketik: '+e.message+' — lihat Log Live.');}
+  muatLog();
+}
+function urlGlobal(){return (document.getElementById('url-global').value||'').trim()||'https://example.com';}
+let LOG_TEKS="";
+function statusSalin(t){const s=document.getElementById('salin-status');if(s)s.textContent=t;}
+async function muatLog(){
+  const box=document.getElementById('log-list');
+  if(!box)return;
+  try{
+    const d=await api('/api/orchestrator/devices/log?batas=60');
+    const rows=d.log||[];
+    if(!rows.length){box.innerHTML='<div class="text-gray-400">Belum ada perintah. Klik / geser gambar HP untuk menguji.</div>';LOG_TEKS="";return;}
+    LOG_TEKS=rows.slice().reverse().map(e=>{
+      const st=e.ok?('-> '+e.ms+'ms OK'):('GAGAL: '+(e.error||'?'));
+      const det=e.detail?(' '+e.detail):'';
+      return e.jam+' ['+e.aksi+'] '+e.serial+det+' '+st;
+    }).join('\n');
+    box.innerHTML=rows.map(e=>{
+      const w=e.ok?'text-green-300':'text-red-300';
+      const st=e.ok?('→ '+e.ms+'ms OK'):('GAGAL: '+esc(e.error||'?'));
+      const det=e.detail?(' '+esc(e.detail)):'';
+      return '<div class="'+w+'">'+esc(e.jam)+' ['+esc(e.aksi)+'] '+esc(e.serial)+det+' '+esc(st)+'</div>';
+    }).join('');
+  }catch(e){box.innerHTML='<div class="text-red-300">Log gagal dimuat: '+esc(e.message)+'</div>';}
+}
+async function salinLog(btn){
+  statusSalin('menyalin...');
+  let teks=LOG_TEKS;
+  if(!teks){
+    try{const r=await fetch('/api/orchestrator/devices/log/text?batas=200');teks=await r.text();}catch(e){teks="";}
+  }
+  if(!teks){statusSalin('log kosong.');return;}
+  try{
+    await navigator.clipboard.writeText(teks);
+    statusSalin('tersalin ✓ ('+teks.split('\n').length+' baris)');
+  }catch(e){
+    try{
+      const ta=document.createElement('textarea');ta.value=teks;document.body.appendChild(ta);ta.select();
+      document.execCommand('copy');ta.remove();statusSalin('tersalin ✓');
+    }catch(err){statusSalin('gagal salin: '+err.message);}
+  }
+  if(btn){const l=btn.textContent;btn.textContent='Tersalin ✓';setTimeout(()=>btn.textContent=l,1500);}
+  setTimeout(()=>statusSalin(''),3000);
+}
+async function unduhLog(){
+  try{
+    const r=await fetch('/api/orchestrator/devices/log/text?batas=200');
+    const teks=await r.text();
+    const blob=new Blob([teks||'log kosong'],{type:'text/plain'});
+    const a=document.createElement('a');a.href=URL.createObjectURL(blob);
+    a.download='otomet-log-'+new Date().toISOString().slice(0,19).replace(/[:T]/g,'-')+'.txt';
+    document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove();},500);
+    statusSalin('diunduh ✓');
+  }catch(e){statusSalin('gagal unduh: '+e.message);}
+  setTimeout(()=>statusSalin(''),3000);
+}
+async function bersihkanLog(){
+  try{await api('/api/orchestrator/devices/log/clear',{method:'POST'});}catch(e){}
+  muatLog();
+}
+async function bukaSatu(serial){
+  const m=document.getElementById('msg-'+serial); if(m)m.textContent='Membuka '+urlGlobal()+' → kirim...';
+  try{const d=await api('/api/orchestrator/devices/open-url',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({serial:serial,url:urlGlobal()})});const ms=(d&&d.ms!=null)?d.ms:'?';if(m)m.textContent='Dibuka: '+d.url+' ('+ms+'ms) — cek layar HP.';}
+  catch(e){if(m)m.textContent='Gagal buka: '+e.message+' — lihat Log Live.';}
+  muatLog();
+}
+async function bukaSemua(){
+  apesan().textContent='Membuka '+urlGlobal()+' di semua HP...';
+  try{const d=await api('/api/orchestrator/devices/live');
+    for(const k of (d.kartu||[])){try{await api('/api/orchestrator/devices/open-url',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({serial:k.serial,url:urlGlobal()})});}catch(e){}}
+    apesan().textContent='Terkirim ke '+(d.kartu||[]).length+' HP.';
+  }catch(e){apesan().textContent='Gagal: '+e.message;}
+  setTimeout(()=>muat(),2000);
+}
+async function ujiNyata(){
+  if(SEDANG_UJI)return; SEDANG_UJI=true;
+  const box=document.getElementById('uji-box'); box.classList.remove('hidden');
+  const btn=document.getElementById('btn-uji'); btn.textContent='Menjalankan...'; btn.disabled=true;
+  try{
+    box.innerHTML='Menyiapkan sesi 2 HP...';
+    const s=await api('/api/runs/demo/real-2device',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({url:urlGlobal()})});
+    box.innerHTML='Sesi #'+s.session_id+' siap. Membuka Chrome nyata (1-3 mnt)...';
+    const r=await api('/api/runs/sessions/'+s.session_id+'/run',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({mode:'real'})});
+    box.innerHTML='Selesai: <b>'+r.ringkasan.passed+' passed, '+r.ringkasan.failed+' failed</b>. <a class="text-blue-600 underline" href="/api/runs/sessions/'+s.session_id+'/runs/view">Runs</a> | <a class="text-blue-600 underline" href="/api/reports/sessions/'+s.session_id+'/view">Laporan</a>';
+  }catch(e){box.innerHTML='Gagal: '+e.message;}
+  btn.textContent='Jalankan Uji Nyata 2 HP'; btn.disabled=false; SEDANG_UJI=false; muat();
+}
+muat(); muatLog();
+setInterval(()=>{if(OTOMATIS&&!SEDANG_UJI&&!document.hidden)muat();},3500);
+setInterval(()=>{if(!document.hidden)muatLog();},2000);
+</script>
+{% endblock %}

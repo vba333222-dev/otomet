@@ -1,0 +1,14 @@
+=== UJI SIMULASI START ===
+sid=1
+POST simulate -> 200 body[:800]={"session_id":1,"ringkasan":{"total":2,"passed":0,"failed":2,"blocked":0},"hasil":[{"assignment_id":1,"run_id":2,"status":"failed","failure_category":"validation_error","alasan":"Gagal buka sesi Appium: WebDriver.__init__() got an unexpected keyword argument 'desired_capabilities'","caps":{"platformName":"Android","automationName":"UiAutomator2","appium:automationName":"UiAutomator2","udid":"192.168.100.50:42851","appium:udid":"192.168.100.50:42851","systemPort":8200,"chromedriverPort":9515,"chromeDriverPort":9515,"appium:systemPort":8200,"appium:chromedriverPort":9515,"browserName":"Chrome","appium:browserName":"Chrome","newCommandTimeout":120,"appium:newCommandTimeout":120,"noReset":true,"appium:noReset":true,"autoGrantPermissions":true,"appium:autoGrantPermissions":true,"appium:chromedr
+ringkasan={'total': 2, 'passed': 0, 'failed': 2, 'blocked': 0} data_ganda=False alasan=0/2 passed.
+GET runs -> 200 body[:800]={"session_id":1,"ringkasan":{"total":2,"passed":0,"failed":2,"blocked":0,"running":0},"runs":[{"id":1,"scenario_assignment_id":2,"test_data_id":null,"started_at":"2026-09-26 17:30:25","completed_at":"2026-09-26 17:30:26","status":"failed","failure_category":"validation_error","log_path":null,"screenshot_dir":null,"video_path":null,"device_id":2,"scenario_id":1},{"id":2,"scenario_assignment_id":1,"test_data_id":1,"started_at":"2026-09-26 17:30:25","completed_at":"2026-09-26 17:30:25","status":"failed","failure_category":"validation_error","log_path":null,"screenshot_dir":null,"video_path":null,"device_id":1,"scenario_id":1}]}
+GET /api/reports/sessions/1/summary -> 200 len=1805
+GET /api/reports/sessions/1/pdf -> 200 len=1206
+GET /api/reports/sessions/1/xlsx -> 200 len=5981
+GET /api/reports/sessions/1/view -> 200 len=5137
+GET /api/runs/sessions/1/runs/view -> 200 len=6479
+DATA_GANDA sid=1 rows=0 (0=aman) detail=[]
+RUN (2, 1, 1, 'failed', 'validation_error')
+RUN (1, 2, None, 'failed', 'validation_error')
+=== UJI SIMULASI DONE ===

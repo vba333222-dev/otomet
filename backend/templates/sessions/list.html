@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block title %}Sesi Pair - {{ client.nama }}{% endblock %}
+{% block content %}
+<div class="space-y-6">
+<nav class="flex text-sm"><ol class="flex items-center space-x-2">
+<li><a href="/api/clients/view" class="text-gray-400">Clients</a></li><li><span class="text-gray-300">/</span></li>
+<li><a href="/api/clients/{{ client.id }}/view" class="text-gray-400">{{ client.nama }}</a></li><li><span class="text-gray-300">/</span></li>
+<li><span class="text-gray-900">Sesi Pair</span></li></ol></nav>
+<div class="flex justify-between items-center"><div>
+<h2 class="text-2xl font-bold">Sesi Pair {{ client.nama }}</h2>
+<p class="text-sm text-gray-500">{{ sesi|length }} sesi &bull; satu sesi = 2 device, satu batch = satu klien</p></div>
+<div class="space-x-2"><a href="/api/broadcast/clients/{{ client.id }}/view" class="px-3 py-2 text-sm bg-orange-100 rounded">Broadcast</a>
+<a href="/api/orchestrator/devices/view" class="px-3 py-2 text-sm bg-gray-100 rounded">Device Pool</a></div></div>
+<div class="bg-white shadow rounded-lg p-6" x-data="{a:'', b:'', label:''}">
+<h3 class="font-medium mb-2">Buat Sesi Pair Baru</h3>
+<div class="flex flex-wrap gap-2 items-end">
+<label class="text-xs">Device A <select id="dev-a" class="border rounded px-2 py-1 text-sm">{% for d in devices %}<option value="{{ d.id }}">{{ d.adb_id }} ({{ d.status }})</option>{% endfor %}</select></label>
+<label class="text-xs">Device B <select id="dev-b" class="border rounded px-2 py-1 text-sm">{% for d in devices %}<option value="{{ d.id }}">{{ d.adb_id }} ({{ d.status }})</option>{% endfor %}</select></label>
+<label class="text-xs">Label <input id="pair-label" placeholder="pair-1" class="border rounded px-2 py-1 text-sm w-32"></label>
+<button onclick="buatSesi({{ client.id }})" class="px-3 py-1 text-sm bg-green-600 text-white rounded">Buat Pair</button></div>
+<p class="text-xs text-gray-500 mt-1">Fail-closed: device offline/busy/sama/klien beda ditolak. Device jadi busy otomatis.</p>
+<p id="sesi-pesan" class="text-xs mt-1 text-gray-600"></p></div>
+{% if sesi %}
+<div class="bg-white shadow rounded-lg divide-y divide-gray-200">
+{% for s in sesi %}
+<div class="p-4 flex items-center justify-between">
+<div><p class="font-medium text-sm">{{ s.pair_label or ('sesi #'~s.id) }}</p>
+<p class="text-xs text-gray-500">#{{ s.id }} &bull; A:{{ s.device_a_id }} B:{{ s.device_b_id }} &bull; {{ s.created_at }}</p></div>
+<div class="flex items-center space-x-2">
+<span class="px-2 py-0.5 text-xs rounded {% if s.status=='running' %}bg-green-100 text-green-800{% elif s.status=='completed' %}bg-gray-200 text-gray-700{% else %}bg-red-100 text-red-800{% endif %}">{{ s.status }}</span>
+<a href="/api/orchestrator/sessions/{{ s.id }}/view" class="px-2 py-1 text-xs bg-blue-100 rounded">Detail + Assign</a></div></div>
+{% endfor %}</div>
+{% else %}<div class="bg-white shadow rounded-lg p-12 text-center text-gray-500"><p>Belum ada sesi pair. Buat pair pertama dari 2 device idle.</p></div>{% endif %}
+</div>
+{% endblock %}
+{% block scripts %}
+<script>
+async function buatSesi(clientId){
+ const a=document.getElementById('dev-a').value, b=document.getElementById('dev-b').value, label=document.getElementById('pair-label').value;
+ const el=document.getElementById('sesi-pesan'); el.textContent='Membuat sesi...';
+ const r=await fetch('/api/orchestrator/sessions',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({client_id:clientId,device_a_id:parseInt(a),device_b_id:parseInt(b),pair_label:label})});
+ const d=await r.json(); if(!r.ok){el.textContent='Gagal: '+JSON.stringify(d.detail||d);return;}
+ location.href='/api/orchestrator/sessions/'+d.id+'/view';
+}
+</script>
+{% endblock %}

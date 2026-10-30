@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+
+{% block title %}Skenario - {{ client.nama }}{% endblock %}
+
+{% block content %}
+<div class="space-y-6">
+    <nav class="flex" aria-label="Breadcrumb">
+        <ol class="flex items-center space-x-4 text-sm">
+            <li><a href="/api/clients/view" class="text-gray-400 hover:text-gray-500">Clients</a></li>
+            <li><span class="mx-2 text-gray-300">/</span></li>
+            <li><a href="/api/clients/{{ client.id }}/view" class="text-gray-400 hover:text-gray-500">{{ client.nama }}</a></li>
+            <li><span class="mx-2 text-gray-300">/</span></li>
+            <li><span class="text-gray-900">Skenario</span></li>
+        </ol>
+    </nav>
+
+    <div class="flex justify-between items-center">
+        <div>
+            <h2 class="text-2xl font-bold text-gray-900">Skenario {{ client.nama }}</h2>
+            <p class="mt-1 text-sm text-gray-500">{{ scenarios|length }} fungsi, {{ total_versi }} versi total</p>
+        </div>
+        <a href="/api/scenarios/builder/view?client_id={{ client.id }}"
+           class="px-4 py-2 text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700">
+            + Buat Skenario
+        </a>
+    </div>
+
+    {% if scenarios %}
+    <div class="bg-white shadow rounded-lg divide-y divide-gray-200">
+        {% for s in scenarios %}
+        <div class="p-4 flex items-start justify-between">
+            <div>
+                <p class="font-medium text-gray-900">{{ s.nama_fungsi }}</p>
+                <p class="text-xs text-gray-500 mt-1">v{{ s.versi }} &bull; {{ s.steps|length }} steps &bull; {{ s.created_at }}</p>
+            </div>
+            <div class="flex space-x-2">
+                <a href="/api/scenarios/{{ s.id }}/view"
+                   class="px-3 py-1 text-xs rounded-md bg-blue-100 text-blue-700 hover:bg-blue-200">Detail & Versi</a>
+                <a href="/api/scenarios/builder/view?client_id={{ client.id }}&copy_from={{ s.id }}"
+                   class="px-3 py-1 text-xs rounded-md bg-gray-100 text-gray-700 hover:bg-gray-200">Edit (versi baru)</a>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="bg-white shadow rounded-lg p-12 text-center text-gray-500">
+        <p>Belum ada skenario. Buat skenario pertama dari elemen tervalidasi.</p>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

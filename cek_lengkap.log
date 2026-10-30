@@ -1,0 +1,66 @@
+=== CEK LENGKAP START ===
+which node = C:\nvm4w\nodejs\node.EXE
+which npm = C:\nvm4w\nodejs\npm.CMD
+which appium = None
+which adb = None
+CMD node --version rc=0 out='v24.21.0\n' err=''
+CMD npm --version EXC [WinError 2] The system cannot find the file specified
+skip appium --version (tak ada di PATH)
+DB devices count=2
+DB clients count=137
+DB sessions count=1
+DB scenario_assignments count=2
+DB runs count=0
+DB test_data_pool count=2
+SESSION {'id': 1, 'client_id': 137, 'device_a_id': 1, 'device_b_id': 2, 'pair_label': 'cek-env', 'status': 'running'}
+DEVICE {'id': 1, 'adb_id': '192.168.100.50:42851', 'appium_port': 4723, 'status': 'busy'}
+DEVICE {'id': 2, 'adb_id': '192.168.100.81:37251', 'appium_port': 4724, 'status': 'busy'}
+DATA_GANDA rows=0 (0=aman)
+GET /health -> 200 body[:300]={"status":"ok","phase":"8"}
+GET /ready -> 404 body[:300]={"detail":"Not Found"}
+GET /api/orchestrator/devices/adb -> 200 body[:300]={"live":["192.168.100.50:42851","192.168.100.81:37251"]}
+running_session_id=1
+GET /api/runs/sessions/1/runs -> 200 len=96
+GET /api/reports/sessions/1/summary -> 200 len=1223
+GET /api/reports/sessions/1/pdf -> 200 len=1030
+GET /api/reports/sessions/1/xlsx -> 200 len=5840
+GET /api/reports/sessions/1/view -> 200 len=4641
+GET /api/runs/sessions/1/runs/view -> 200 len=6084
+tests exists=True
+  tests/__init__.py
+  tests/__pycache__
+  tests/__pycache__\__init__.cpython-314.pyc
+  tests/__pycache__\test_broadcast.cpython-314-pytest-9.1.1.pyc
+  tests/__pycache__\test_broadcast.cpython-314.pyc
+  tests/__pycache__\test_database.cpython-314-pytest-9.1.1.pyc
+  tests/__pycache__\test_device_pool.cpython-314-pytest-9.1.1.pyc
+  tests/__pycache__\test_device_pool.cpython-314.pyc
+  tests/__pycache__\test_matcher.cpython-314-pytest-9.1.1.pyc
+  tests/__pycache__\test_matcher.cpython-314.pyc
+  tests/__pycache__\test_recalibration.cpython-314-pytest-9.1.1.pyc
+  tests/__pycache__\test_reports.cpython-314.pyc
+  tests/__pycache__\test_runs.cpython-314-pytest-9.1.1.pyc
+  tests/__pycache__\test_runs.cpython-314.pyc
+  tests/__pycache__\test_scenarios.cpython-314-pytest-9.1.1.pyc
+  tests/__pycache__\test_scorer.cpython-314-pytest-9.1.1.pyc
+  tests/__pycache__\test_selector_gen.cpython-314-pytest-9.1.1.pyc
+  tests/__pycache__\test_sessions.cpython-314-pytest-9.1.1.pyc
+  tests/__pycache__\test_sessions.cpython-314.pyc
+  tests/__pycache__\test_threshold.cpython-314-pytest-9.1.1.pyc
+  tests/__pycache__\test_threshold.cpython-314.pyc
+  tests/fixtures
+  tests/fixtures\sample_pages
+  tests/fixtures\sample_pages\test_page.html
+  tests/test_broadcast.py
+  tests/test_database.py
+  tests/test_device_pool.py
+  tests/test_matcher.py
+  tests/test_recalibration.py
+  tests/test_reports.py
+  tests/test_runs.py
+  tests/test_scenarios.py
+  tests/test_scorer.py
+  tests/test_selector_gen.py
+  tests/test_sessions.py
+  tests/test_threshold.py
+=== CEK LENGKAP DONE ===

@@ -1,0 +1,16 @@
+=== CHECK REAL ENV START ===
+ADB live via pool = ['192.168.100.50:42851', '192.168.100.81:37251']
+which adb = None
+CMD adb devices EXC [WinError 2] The system cannot find the file specified
+CMD C:\Users\USER\AppData\Local\Android\Sdk\platform-tools\adb.exe devices rc=0 out='List of devices attached\n192.168.100.50:42851\tdevice\n192.168.100.81:37251\tdevice\n\n' err=''
+APPIUM 4723 DOWN (URLError: <urlopen error [WinError 10061] No connection could be made because the target machine actively refused it>) -> jalankan: appium -p 4723
+APPIUM 4724 DOWN (URLError: <urlopen error [WinError 10061] No connection could be made because the target machine actively refused it>) -> jalankan: appium -p 4724
+port8000_sibuk=False
+GET /health -> 200 len=27
+GET / -> 200 len=7979
+GET /api/runs/demo/real-2device/view -> 200 len=7174
+GET /api/orchestrator/devices/adb -> 200 len=56
+GET /api/orchestrator/devices -> 200 body[:400]=[]
+POST demo/real-2device -> 200 body[:600]={"session_id":1,"client_id":137,"scenario_id":1,"page_id":86,"device_a":{"id":1,"adb_id":"192.168.100.50:42851","appium_port":4723,"status":"idle","ram_gb":null,"last_health_check_at":"2026-09-26 17:27:31","created_at":"2026-09-26 17:27:31"},"device_b":{"id":2,"adb_id":"192.168.100.81:37251","appium_port":4724,"status":"idle","ram_gb":null,"last_health_check_at":"2026-09-26 17:27:31","created_at":"2026-09-26 17:27:31"},"caps_a":{"platformName":"Android","automationName":"UiAutomator2","appium:automationName":"UiAutomator2","udid":"192.168.100.50:42851","appium:udid":"192.168.100.50:42851","sys
+=== CHECK REAL ENV DONE ===
+EXIT:0

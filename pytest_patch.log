@@ -1,0 +1,24 @@
+============================= test session starts =============================
+platform win32 -- Python 3.14.0, pytest-9.1.1, pluggy-1.6.0 -- C:\Python314\python.exe
+cachedir: .pytest_cache
+rootdir: C:\Project\otomet
+plugins: anyio-4.12.1, asyncio-1.4.0
+asyncio: mode=Mode.STRICT, debug=False, asyncio_default_fixture_loop_scope=None, asyncio_default_test_loop_scope=function
+collecting ... collected 14 items
+
+tests/test_runs.py::TestCaps::test_port_unik PASSED                      [  7%]
+tests/test_runs.py::TestCaps::test_klasifikasi PASSED                    [ 14%]
+tests/test_runs.py::TestData::test_klaim_atomik_beda_baris PASSED        [ 21%]
+tests/test_runs.py::TestData::test_tambah_validasi PASSED                [ 28%]
+tests/test_runs.py::TestJalankan::test_paralel_dua_device_passed PASSED  [ 35%]
+tests/test_runs.py::TestJalankan::test_satu_gagal_lain_tetap_jalan PASSED [ 42%]
+tests/test_runs.py::TestJalankan::test_data_sama_ditolak PASSED          [ 50%]
+tests/test_runs.py::TestJalankan::test_gate_tertahan_blocked PASSED      [ 57%]
+tests/test_runs.py::TestBroadcastFisik::test_fisik_paralel_ok PASSED     [ 64%]
+tests/test_reports.py::TestLaporan::test_laporan_sesi PASSED             [ 71%]
+tests/test_reports.py::TestLaporan::test_laporan_klien_dan_tren PASSED   [ 78%]
+tests/test_reports.py::TestLaporan::test_sesi_hilang_fail_closed PASSED  [ 85%]
+tests/test_reports.py::TestExport::test_pdf_valid PASSED                 [ 92%]
+tests/test_reports.py::TestExport::test_xlsx_valid PASSED                [100%]
+
+============================= 14 passed in 19.75s =============================

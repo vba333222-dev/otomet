@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% block title %}Broadcast - {{ client.nama }}{% endblock %}
+{% block content %}
+<div class="space-y-6">
+<nav class="flex text-sm"><ol class="flex items-center space-x-2">
+<li><a href="/api/clients/{{ client.id }}/view" class="text-gray-400">{{ client.nama }}</a></li><li><span class="text-gray-300">/</span></li>
+<li><span class="text-gray-900">Broadcast</span></li></ol></nav>
+<div class="bg-red-50 border border-red-200 rounded-lg p-4 text-sm text-red-800">
+<b>Safety dulu:</b> broadcast hanya ke device yang lolos safety check. Device offline / terikat sesi aktif otomatis di-exclude + alasan. Audit tercatat; eksekusi fisik paralel tersedia via runner Phase 7.
+</div>
+<div class="bg-white shadow rounded-lg p-6" x-data="{aksi:'tap', target:'', pilihSemua:true}">
+<h3 class="font-medium mb-2">Panel Broadcast</h3>
+<div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
+<label class="text-xs">Aksi <select id="bc-aksi" class="w-full border rounded px-2 py-1 text-sm">{% for a in allowed %}<option value="{{ a }}">{{ a }}</option>{% endfor %}</select></label>
+<label class="text-xs">Target role/koordinat <input id="bc-target" placeholder="cth: button_masuk" class="w-full border rounded px-2 py-1 text-sm"></label>
+<label class="text-xs">Device <span class="text-gray-500">(kosongkan = semua layak)</span><input id="bc-dev" placeholder="cth: 1,2" class="w-full border rounded px-2 py-1 text-sm"></label>
+</div>
+<div class="mt-3 flex space-x-2">
+<button onclick="cek({{ client.id }})" class="px-3 py-1 text-sm bg-yellow-500 text-white rounded">Safety Check</button>
+<button onclick="jalankan({{ client.id }})" class="px-3 py-1 text-sm bg-orange-600 text-white rounded">Jalankan Broadcast</button>
+</div>
+<p id="bc-pesan" class="text-xs mt-2 text-gray-600"></p>
+<div id="bc-hasil" class="mt-2 text-xs"></div>
+</div>
+<div class="bg-white shadow rounded-lg p-6">
+<h3 class="font-medium mb-2">Device Pool ({{ devices|length }})</h3>
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-sm">
+{% for d in devices %}<div class="border rounded p-2 font-mono">{{ d.adb_id }} <span class="text-gray-500">({{ d.status }})</span></div>{% endfor %}
+</div></div>
+<div class="bg-white shadow rounded-lg p-6">
+<h3 class="font-medium mb-2">Riwayat Broadcast ({{ riwayat|length }})</h3>
+<div class="space-y-2 text-sm">
+{% for b in riwayat %}<div class="border rounded p-2 flex justify-between"><span>{{ b.action_type }} &rarr; {{ b.target_role_or_coord }}</span><a href="/api/broadcast/{{ b.id }}" class="px-2 py-0.5 text-xs bg-gray-100 rounded">JSON</a></div>
+{% else %}<p class="text-gray-500">Belum ada broadcast.</p>{% endfor %}
+</div></div>
+</div>
+{% endblock %}
+{% block scripts %}
+<script>
+function _body(cid){const aksi=document.getElementById('bc-aksi').value;const target=document.getElementById('bc-target').value;const devRaw=document.getElementById('bc-dev').value.trim();let ids=null;if(devRaw){ids=devRaw.split(',').map(s=>parseInt(s.trim())).filter(n=>!isNaN(n));}return {client_id:cid,action_type:aksi,target:target,device_ids:ids};}
+function _render(hasil){const box=document.getElementById('bc-hasil');let h='<p><b>'+hasil.alasan+'</b></p>';h+='<p class="text-green-700">Ikut ('+(hasil.ikut||[]).length+'): '+((hasil.ikut||[]).map(x=>x.adb_id).join(', ')||'-')+'</p>';h+='<p class="text-red-700">Di-exclude ('+(hasil.dikecualikan||[]).length+'): '+((hasil.dikecualikan||[]).map(x=>x.adb_id+': '+x.alasan).join(' | ')||'-')+'</p>';box.innerHTML=h;}
+async function cek(cid){const el=document.getElementById('bc-pesan');el.textContent='Safety check...';const r=await fetch('/api/broadcast/check',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(_body(cid))});const d=await r.json();if(!r.ok){el.textContent='Gagal: '+JSON.stringify(d.detail||d);return;}el.textContent=d.alasan;_render(d);}
+async function jalankan(cid){if(!confirm('Jalankan broadcast? Pastikan device target benar.'))return;const el=document.getElementById('bc-pesan');el.textContent='Menjalankan...';const r=await fetch('/api/broadcast/run',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(_body(cid))});const d=await r.json();if(!r.ok){el.textContent='Ditolak: '+JSON.stringify(d.detail||d);return;}el.textContent='Tercatat #'+d.id+': '+d.alasan;_render(d);setTimeout(()=>location.reload(),1200);}
+</script>
+{% endblock %}

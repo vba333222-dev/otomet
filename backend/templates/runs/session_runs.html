@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% block title %}Runs Sesi #{{ sesi.id }}{% endblock %}
+{% block content %}
+<div class="space-y-6">
+<nav class="flex text-sm"><ol class="flex items-center space-x-2">
+<li><a href="/api/clients/{{ client.id }}/view" class="text-gray-400">{{ client.nama }}</a></li><li><span class="text-gray-300">/</span></li>
+<li><a href="/api/orchestrator/sessions/{{ sesi.id }}/view" class="text-gray-400">Sesi #{{ sesi.id }}</a></li><li><span class="text-gray-300">/</span></li>
+<li><span class="text-gray-900">Runs</span></li></ol></nav>
+<div class="bg-white shadow rounded-lg p-6">
+<h2 class="text-2xl font-bold">Runs Sesi #{{ sesi.id }} {{ sesi.pair_label or '' }}</h2>
+<p class="text-xs text-gray-500 mt-1">Status sesi {{ sesi.status }} &bull; A:{{ dev_a.adb_id if dev_a else '-' }} B:{{ dev_b.adb_id if dev_b else '-' }}</p>
+<div class="mt-3 flex space-x-4 text-sm">
+<span class="px-2 py-0.5 rounded bg-gray-100">Total {{ ringkas.ringkasan.total }}</span>
+<span class="px-2 py-0.5 rounded bg-green-100 text-green-800">Passed {{ ringkas.ringkasan.passed }}</span>
+<span class="px-2 py-0.5 rounded bg-red-100 text-red-800">Failed {{ ringkas.ringkasan.failed }}</span>
+<span class="px-2 py-0.5 rounded bg-yellow-100 text-yellow-800">Blocked {{ ringkas.ringkasan.blocked }}</span>
+<span class="px-2 py-0.5 rounded bg-blue-100 text-blue-800">Running {{ ringkas.ringkasan.running }}</span>
+</div>
+{% if sesi.status == 'running' %}
+<div class="mt-4 flex flex-wrap gap-2">
+<button onclick="jalankan({{ sesi.id }}, 'simulate')" class="px-3 py-1 text-sm bg-green-600 text-white rounded">Jalankan Paralel (Simulasi)</button>
+<button onclick="jalankan({{ sesi.id }}, 'real')" class="px-3 py-1 text-sm bg-purple-600 text-white rounded">Real Chrome 2 HP (Appium)</button>
+<a href="/api/orchestrator/sessions/{{ sesi.id }}/view" class="px-3 py-1 text-sm bg-gray-100 rounded">Kembali ke Sesi</a>
+<a href="/api/reports/sessions/{{ sesi.id }}/view" class="px-3 py-1 text-sm bg-red-600 text-white rounded">Laporan + Export</a>
+</div>
+<p id="run-pesan" class="text-xs mt-2 text-gray-600"></p>
+<p class="text-xs text-gray-500 mt-1">Simulasi = FakeDriver tanpa kabel. Real Chrome = 2 Appium server (4723+4724) + ADB WiFi + Chrome di HP. Anti-race: klaim data atomik + stagger start + semaphore klien. Satu device gagal tak hentikan lainnya.</p>
+{% endif %}
+</div>
+<div class="bg-white shadow rounded-lg p-6">
+<h3 class="font-medium mb-2">Assignment ({{ assignments|length }})</h3>
+<div class="space-y-2 text-sm">
+{% for a in assignments %}<div class="border rounded p-2 flex justify-between"><span class="font-mono">{{ a.adb_id }}</span><span>{{ a.nama_fungsi }} v{{ a.versi }}</span><span class="text-gray-500">#{{ a.id }}</span></div>
+{% else %}<p class="text-gray-500">Belum ada assignment.</p>{% endfor %}
+</div></div>
+<div class="bg-white shadow rounded-lg p-6">
+<h3 class="font-medium mb-2">Riwayat Runs ({{ ringkas.runs|length }})</h3>
+<div class="space-y-2 text-sm">
+{% for r in ringkas.runs %}<div class="border rounded p-2 flex justify-between"><span>#{{ r.id }} &bull; assign {{ r.scenario_assignment_id }} &bull; device {{ r.device_id }} &bull; data {{ r.test_data_id or '-' }}</span><span class="px-2 py-0.5 text-xs rounded {% if r.status=='passed' %}bg-green-100 text-green-800{% elif r.status=='failed' %}bg-red-100 text-red-800{% elif r.status=='blocked' %}bg-yellow-100 text-yellow-800{% else %}bg-blue-100 text-blue-800{% endif %}">{{ r.status }}{% if r.failure_category %} ({{ r.failure_category }}){% endif %}</span></div>
+{% else %}<p class="text-gray-500">Belum ada run.</p>{% endfor %}
+</div></div>
+</div>
+{% endblock %}
+{% block scripts %}
+<script>
+async function jalankan(sid, mode){const el=document.getElementById('run-pesan');el.textContent=(mode==='real'?'Membuka Chrome nyata di 2 HP via Appium...':'Menjalankan paralel...');const r=await fetch('/api/runs/sessions/'+sid+'/run',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({mode:mode||'simulate'})});const d=await r.json();if(!r.ok){el.textContent='Gagal: '+JSON.stringify(d.detail||d);return;}el.textContent='Selesai: '+d.ringkasan.passed+' passed, '+d.ringkasan.failed+' failed, '+d.ringkasan.blocked+' blocked.'+(d.data_ganda?' DATA GANDA!':'');setTimeout(()=>location.reload(),1200);}
+</script>
+{% endblock %}

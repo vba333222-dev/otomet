@@ -1,0 +1,1385 @@
+{
+  "metadata": {
+    "url": "file:///C:/Project/otomet/tests/fixtures/sample_pages/test_page.html",
+    "timestamp": "2026-09-26T00:54:43.329222",
+    "viewport": {
+      "width": 720,
+      "height": 1650
+    },
+    "total_elements": 28
+  },
+  "elements": [
+    {
+      "id": "elem_0",
+      "role_label": "banner_sample_test_page_home_about_co",
+      "confidence": 0.48,
+      "score_breakdown": {
+        "role_semantic": 0.5,
+        "interactivity": 0.0,
+        "accessible_name": 0.6,
+        "selector_stability": 0.5,
+        "visual_prominence": 0.6,
+        "text_clarity": 1.0
+      },
+      "selectors": {
+        "primary": "[role='banner']:has-text('Sample Test Page Home About Co')",
+        "fallbacks": [
+          ":text('Sample Test Page Home About Co')",
+          "body > header",
+          "header:nth-of-type(1)"
+        ]
+      },
+      "accessible_name": null,
+      "element": {
+        "tagName": "header",
+        "role": "banner",
+        "text": "Sample Test Page Home About Contact",
+        "bbox": {
+          "x": 20,
+          "y": 91,
+          "width": 680,
+          "height": 76,
+          "top": 91,
+          "left": 20,
+          "right": 700,
+          "bottom": 168
+        },
+        "interactive": false,
+        "attributes": {
+          "id": null,
+          "name": null,
+          "type": null,
+          "href": null,
+          "placeholder": null,
+          "value": null,
+          "disabled": false,
+          "readonly": false
+        }
+      }
+    },
+    {
+      "id": "elem_1",
+      "role_label": "heading_sample_test_page",
+      "confidence": 0.57,
+      "score_breakdown": {
+        "role_semantic": 0.7,
+        "interactivity": 0.0,
+        "accessible_name": 0.6,
+        "selector_stability": 0.5,
+        "visual_prominence": 1.0,
+        "text_clarity": 1.0
+      },
+      "selectors": {
+        "primary": "[role='heading']:has-text('Sample Test Page')",
+        "fallbacks": [
+          ":text('Sample Test Page')",
+          "body > header > h1",
+          "h1:nth-of-type(1)"
+        ]
+      },
+      "accessible_name": null,
+      "element": {
+        "tagName": "h1",
+        "role": "heading",
+        "text": "Sample Test Page",
+        "bbox": {
+          "x": 20,
+          "y": 91,
+          "width": 680,
+          "height": 37,
+          "top": 91,
+          "left": 20,
+          "right": 700,
+          "bottom": 128
+        },
+        "interactive": false,
+        "attributes": {
+          "id": null,
+          "name": null,
+          "type": null,
+          "href": null,
+          "placeholder": null,
+          "value": null,
+          "disabled": false,
+          "readonly": false
+        }
+      }
+    },
+    {
+      "id": "elem_2",
+      "role_label": "navigation_home_about_contact",
+      "confidence": 0.57,
+      "score_breakdown": {
+        "role_semantic": 0.7,
+        "interactivity": 0.0,
+        "accessible_name": 0.6,
+        "selector_stability": 0.5,
+        "visual_prominence": 1.0,
+        "text_clarity": 1.0
+      },
+      "selectors": {
+        "primary": "[role='navigation']:has-text('Home About Contact')",
+        "fallbacks": [
+          ":text('Home About Contact')",
+          "body > header > nav",
+          "nav:nth-of-type(1)"
+        ]
+      },
+      "accessible_name": null,
+      "element": {
+        "tagName": "nav",
+        "role": "navigation",
+        "text": "Home About Contact",
+        "bbox": {
+          "x": 20,
+          "y": 150,
+          "width": 680,
+          "height": 18,
+          "top": 150,
+          "left": 20,
+          "right": 700,
+          "bottom": 168
+        },
+        "interactive": false,
+        "attributes": {
+          "id": null,
+          "name": null,
+          "type": null,
+          "href": null,
+          "placeholder": null,
+          "value": null,
+          "disabled": false,
+          "readonly": false
+        }
+      }
+    },
+    {
+      "id": "elem_3",
+      "role_label": "link_home-link",
+      "confidence": 0.88,
+      "score_breakdown": {
+        "role_semantic": 1.0,
+        "interactivity": 1.0,
+        "accessible_name": 0.6,
+        "selector_stability": 1.0,
+        "visual_prominence": 0.6,
+        "text_clarity": 1.0
+      },
+      "selectors": {
+        "primary": "#home-link",
+        "fallbacks": [
+          "[role='link']:has-text('Home')",
+          ":text('Home')",
+          "#home-link",
+          "a:nth-of-type(1)"
+        ]
+      },
+      "accessible_name": null,
+      "element": {
+        "tagName": "a",
+        "role": "link",
+        "text": "Home",
+        "bbox": {
+          "x": 20,
+          "y": 150,
+          "width": 43,
+          "height": 17,
+          "top": 150,
+          "left": 20,
+          "right": 63,
+          "bottom": 167
+        },
+        "interactive": true,
+        "attributes": {
+          "id": "home-link",
+          "name": null,
+          "type": null,
+          "href": "/",
+          "placeholder": null,
+          "value": null,
+          "disabled": false,
+          "readonly": false
+        }
+      }
+    },
+    {
+      "id": "elem_4",
+      "role_label": "link_about",
+      "confidence": 0.898,
+      "score_breakdown": {
+        "role_semantic": 1.0,
+        "interactivity": 1.0,
+        "accessible_name": 0.8,
+        "selector_stability": 0.85,
+        "visual_prominence": 0.6,
+        "text_clarity": 1.0
+      },
+      "selectors": {
+        "primary": "[aria-label='About us page']",
+        "fallbacks": [
+          "[role='link']:has-text('About')",
+          ":text('About')",
+          "body > header > nav > a",
+          "a:nth-of-type(1)"
+        ]
+      },
+      "accessible_name": null,
+      "element": {
+        "tagName": "a",
+        "role": "link",
+        "text": "About",
+        "bbox": {
+          "x": 66,
+          "y": 150,
+          "width": 42,
+          "height": 17,
+          "top": 150,
+          "left": 66,
+          "right": 108,
+          "bottom": 167
+        },
+        "interactive": true,
+        "attributes": {
+          "id": null,
+          "name": null,
+          "type": null,
+          "href": "/about",
+          "placeholder": null,
+          "value": null,
+          "disabled": false,
+          "readonly": false
+        }
+      }
+    },
+    {
+      "id": "elem_5",
+      "role_label": "link_contact",
+      "confidence": 0.805,
+      "score_breakdown": {
+        "role_semantic": 1.0,
+        "interactivity": 1.0,
+        "accessible_name": 0.6,
+        "selector_stability": 0.5,
+        "visual_prominence": 0.6,
+        "text_clarity": 1.0
+      },
+      "selectors": {
+        "primary": "[role='link']:has-text('Contact')",
+        "fallbacks": [
+          ":text('Contact')",
+          "body > header > nav > a",
+          "a:nth-of-type(1)"
+        ]
+      },
+      "accessible_name": null,
+      "element": {
+        "tagName": "a",
+        "role": "link",
+        "text": "Contact",
+        "bbox": {
+          "x": 113,
+          "y": 150,
+          "width": 55,
+          "height": 17,
+          "top": 150,
+          "left": 113,
+          "right": 168,
+          "bottom": 167
+        },
+        "interactive": true,
+        "attributes": {
+          "id": null,
+          "name": null,
+          "type": null,
+          "href": "/contact",
+          "placeholder": null,
+          "value": null,
+          "disabled": false,
+          "readonly": false
+        }
+      }
+    },
+    {
+      "id": "elem_6",
+      "role_label": "main_login_form_email_password_lo",
+      "confidence": 0.405,
+      "score_breakdown": {
+        "role_semantic": 0.7,
+        "interactivity": 0.0,
+        "accessible_name": 0.3,
+        "selector_stability": 0.4,
+        "visual_prominence": 0.5,
+        "text_clarity": 0.6
+      },
+      "selectors": {
+        "primary": "body > main",
+        "fallbacks": [
+          "main:nth-of-type(1)"
+        ]
+      },
+      "accessible_name": null,
+      "element": {
+        "tagName": "main",
+        "role": "main",
+        "text": "Login Form Email: Password: Login Disabled Button Interactive Elements Add to Cart Show Alert × Form",
+        "bbox": {
+          "x": 20,
+          "y": 188,
+          "width": 680,
+          "height": 667,
+          "top": 188,
+          "left": 20,
+          "right": 700,
+          "bottom": 855
+        },
+        "interactive": false,
+        "attributes": {
+          "id": null,
+          "name": null,
+          "type": null,
+          "href": null,
+          "placeholder": null,
+          "value": null,
+          "disabled": false,
+          "readonly": false
+        }
+      }
+    },
+    {
+      "id": "elem_7",
+      "role_label": "region_login_form_email_password_lo",
+      "confidence": 0.47,
+      "score_breakdown": {
+        "role_semantic": 0.5,
+        "interactivity": 0.0,
+        "accessible_name": 0.6,
+        "selector_stability": 0.5,
+        "visual_prominence": 0.5,
+        "text_clarity": 1.0
+      },
+      "selectors": {
+        "primary": "[role='region']:has-text('Login Form Email: Password: Lo')",
+        "fallbacks": [
+          ":text('Login Form Email: Password: Lo')",
+          "body > main > section",
+          "section:nth-of-type(1)"
+        ]
+      },
+      "accessible_name": null,
+      "element": {
+        "tagName": "section",
+        "role": "region",
+        "text": "Login Form Email: Password: Login Disabled Button",
+        "bbox": {
+          "x": 20,
+          "y": 188,
+          "width": 680,
+          "height": 253,
+          "top": 188,
+          "left": 20,
+          "right": 700,
+          "bottom": 441
+        },
+        "interactive": false,
+        "attributes": {
+          "id": null,
+          "name": null,
+          "type": null,
+          "href": null,
+          "placeholder": null,
+          "value": null,
+          "disabled": false,
+          "readonly": false
+        }
+      }
+    },
+    {
+      "id": "elem_8",
+      "role_label": "heading_login_form",
+      "confidence": 0.57,
+      "score_breakdown": {
+        "role_semantic": 0.7,
+        "interactivity": 0.0,
+        "accessible_name": 0.6,
+        "selector_stability": 0.5,
+        "visual_prominence": 1.0,
+        "text_clarity": 1.0
+      },
+      "selectors": {
+        "primary": "[role='heading']:has-text('Login Form')",
+        "fallbacks": [
+          ":text('Login Form')",
+          "body > main > section > h2",
+          "h2:nth-of-type(1)"
+        ]
+      },
+      "accessible_name": null,
+      "element": {
+        "tagName": "h2",
+        "role": "heading",
+        "text": "Login Form",
+        "bbox": {
+          "x": 20,
+          "y": 188,
+          "width": 680,
+          "height": 28,
+          "top": 188,
+          "left": 20,
+          "right": 700,
+          "bottom": 216
+        },
+        "interactive": false,
+        "attributes": {
+          "id": null,
+          "name": null,
+          "type": null,
+          "href": null,
+          "placeholder": null,
+          "value": null,
+          "disabled": false,
+          "readonly": false
+        }
+      }
+    },
+    {
+      "id": "elem_9",
+      "role_label": "form_login-form",
+      "confidence": 0.595,
+      "score_breakdown": {
+        "role_semantic": 0.7,
+        "interactivity": 0.0,
+        "accessible_name": 0.6,
+        "selector_stability": 1.0,
+        "visual_prominence": 0.5,
+        "text_clarity": 1.0
+      },
+      "selectors": {
+        "primary": "#login-form",
+        "fallbacks": [
+          "[role='form']:has-text('Email: Password: Login Disable')",
+          ":text('Email: Password: Login Disable')",
+          "#login-form",
+          "form:nth-of-type(1)"
+        ]
+      },
+      "accessible_name": null,
+      "element": {
+        "tagName": "form",
+        "role": "form",
+        "text": "Email: Password: Login Disabled Button",
+        "bbox": {
+          "x": 20,
+          "y": 236,
+          "width": 680,
+          "height": 205,
+          "top": 236,
+          "left": 20,
+          "right": 700,
+          "bottom": 441
+        },
+        "interactive": false,
+        "attributes": {
+          "id": "login-form",
+          "name": null,
+          "type": null,
+          "href": null,
+          "placeholder": null,
+          "value": null,
+          "disabled": false,
+          "readonly": false
+        }
+      }
+    },
+    {
+      "id": "elem_10",
+      "role_label": "textbox_email",
+      "confidence": 0.73,
+      "score_breakdown": {
+        "role_semantic": 1.0,
+        "interactivity": 1.0,
+        "accessible_name": 0.1,
+        "selector_stability": 1.0,
+        "visual_prominence": 1.0,
+        "text_clarity": 0.1
+      },
+      "selectors": {
+        "primary": "#email",
+        "fallbacks": [
+          "input[name='email']",
+          "[placeholder='Enter your email']",
+          "#email",
+          "input:nth-of-type(1)"
+        ]
+      },
+      "accessible_name": null,
+      "element": {
+        "tagName": "input",
+        "role": "textbox",
+        "text": "",
+        "bbox": {
+          "x": 20,
+          "y": 264,
+          "width": 320,
+          "height": 35,
+          "top": 264,
+          "left": 20,
+          "right": 340,
+          "bottom": 299
+        },
+        "interactive": true,
+        "attributes": {
+          "id": "email",
+          "name": "email",
+          "type": "email",
+          "href": null,
+          "placeholder": "Enter your email",
+          "value": null,
+          "disabled": false,
+          "readonly": false
+        }
+      }
+    },
+    {
+      "id": "elem_11",
+      "role_label": "textbox_password",
+      "confidence": 0.73,
+      "score_breakdown": {
+        "role_semantic": 1.0,
+        "interactivity": 1.0,
+        "accessible_name": 0.1,
+        "selector_stability": 1.0,
+        "visual_prominence": 1.0,
+        "text_clarity": 0.1
+      },
+      "selectors": {
+        "primary": "#password",
+        "fallbacks": [
+          "input[name='password']",
+          "[placeholder='Enter your password']",
+          "#password",
+          "input:nth-of-type(1)"
+        ]
+      },
+      "accessible_name": null,
+      "element": {
+        "tagName": "input",
+        "role": "textbox",
+        "text": "",
+        "bbox": {
+          "x": 20,
+          "y": 337,
+          "width": 320,
+          "height": 35,
+          "top": 337,
+          "left": 20,
+          "right": 340,
+          "bottom": 372
+        },
+        "interactive": true,
+        "attributes": {
+          "id": "password",
+          "name": "password",
+          "type": "password",
+          "href": null,
+          "placeholder": "Enter your password",
+          "value": null,
+          "disabled": false,
+          "readonly": false
+        }
+      }
+    },
+    {
+      "id": "elem_12",
+      "role_label": "button_submit-btn",
+      "confidence": 0.96,
+      "score_breakdown": {
+        "role_semantic": 1.0,
+        "interactivity": 1.0,
+        "accessible_name": 0.8,
+        "selector_stability": 1.0,
+        "visual_prominence": 1.0,
+        "text_clarity": 1.0
+      },
+      "selectors": {
+        "primary": "#submit-btn",
+        "fallbacks": [
+          "[aria-label='Submit login form']",
+          "[role='button']:has-text('Login')",
+          ":text('Login')",
+          "#submit-btn",
+          "button:nth-of-type(1)"
+        ]
+      },
+      "accessible_name": null,
+      "element": {
+        "tagName": "button",
+        "role": "button",
+        "text": "Login",
+        "bbox": {
+          "x": 25,
+          "y": 392,
+          "width": 77,
+          "height": 39,
+          "top": 392,
+          "left": 25,
+          "right": 102,
+          "bottom": 431
+        },
+        "interactive": true,
+        "attributes": {
+          "id": "submit-btn",
+          "name": null,
+          "type": "submit",
+          "href": null,
+          "placeholder": null,
+          "value": null,
+          "disabled": false,
+          "readonly": false
+        }
+      }
+    },
+    {
+      "id": "elem_13",
+      "role_label": "button_disabled_button",
+      "confidence": 0.705,
+      "score_breakdown": {
+        "role_semantic": 1.0,
+        "interactivity": 0.3,
+        "accessible_name": 0.6,
+        "selector_stability": 0.5,
+        "visual_prominence": 1.0,
+        "text_clarity": 1.0
+      },
+      "selectors": {
+        "primary": "[role='button']:has-text('Disabled Button')",
+        "fallbacks": [
+          ":text('Disabled Button')",
+          "main > section > form > button",
+          "button:nth-of-type(1)"
+        ]
+      },
+      "accessible_name": null,
+      "element": {
+        "tagName": "button",
+        "role": "button",
+        "text": "Disabled Button",
+        "bbox": {
+          "x": 116,
+          "y": 392,
+          "width": 138,
+          "height": 39,
+          "top": 392,
+          "left": 116,
+          "right": 254,
+          "bottom": 431
+        },
+        "interactive": true,
+        "attributes": {
+          "id": null,
+          "name": null,
+          "type": "button",
+          "href": null,
+          "placeholder": null,
+          "value": null,
+          "disabled": true,
+          "readonly": false
+        }
+      }
+    },
+    {
+      "id": "elem_14",
+      "role_label": "region_interactive_elements_add_to_ca",
+      "confidence": 0.48,
+      "score_breakdown": {
+        "role_semantic": 0.5,
+        "interactivity": 0.0,
+        "accessible_name": 0.6,
+        "selector_stability": 0.5,
+        "visual_prominence": 0.6,
+        "text_clarity": 1.0
+      },
+      "selectors": {
+        "primary": "[role='region']:has-text('Interactive Elements Add to Ca')",
+        "fallbacks": [
+          ":text('Interactive Elements Add to Ca')",
+          "body > main > section",
+          "section:nth-of-type(1)"
+        ]
+      },
+      "accessible_name": null,
+      "element": {
+        "tagName": "section",
+        "role": "region",
+        "text": "Interactive Elements Add to Cart Show Alert ×",
+        "bbox": {
+          "x": 20,
+          "y": 461,
+          "width": 680,
+          "height": 107,
+          "top": 461,
+          "left": 20,
+          "right": 700,
+          "bottom": 568
+        },
+        "interactive": false,
+        "attributes": {
+          "id": null,
+          "name": null,
+          "type": null,
+          "href": null,
+          "placeholder": null,
+          "value": null,
+          "disabled": false,
+          "readonly": false
+        }
+      }
+    },
+    {
+      "id": "elem_15",
+      "role_label": "heading_interactive_elements",
+      "confidence": 0.57,
+      "score_breakdown": {
+        "role_semantic": 0.7,
+        "interactivity": 0.0,
+        "accessible_name": 0.6,
+        "selector_stability": 0.5,
+        "visual_prominence": 1.0,
+        "text_clarity": 1.0
+      },
+      "selectors": {
+        "primary": "[role='heading']:has-text('Interactive Elements')",
+        "fallbacks": [
+          ":text('Interactive Elements')",
+          "body > main > section > h2",
+          "h2:nth-of-type(1)"
+        ]
+      },
+      "accessible_name": null,
+      "element": {
+        "tagName": "h2",
+        "role": "heading",
+        "text": "Interactive Elements",
+        "bbox": {
+          "x": 20,
+          "y": 461,
+          "width": 680,
+          "height": 28,
+          "top": 461,
+          "left": 20,
+          "right": 700,
+          "bottom": 489
+        },
+        "interactive": false,
+        "attributes": {
+          "id": null,
+          "name": null,
+          "type": null,
+          "href": null,
+          "placeholder": null,
+          "value": null,
+          "disabled": false,
+          "readonly": false
+        }
+      }
+    },
+    {
+      "id": "elem_16",
+      "role_label": "button_add_to_cart",
+      "confidence": 0.845,
+      "score_breakdown": {
+        "role_semantic": 1.0,
+        "interactivity": 1.0,
+        "accessible_name": 0.6,
+        "selector_stability": 0.5,
+        "visual_prominence": 1.0,
+        "text_clarity": 1.0
+      },
+      "selectors": {
+        "primary": "[role='button']:has-text('Add to Cart')",
+        "fallbacks": [
+          "body > main > section > button.btn.btn-primary:has-text('Add to Cart')",
+          ":text('Add to Cart')",
+          "body > main > section > button.btn.btn-primary",
+          "button:nth-of-type(1)"
+        ]
+      },
+      "accessible_name": null,
+      "element": {
+        "tagName": "button",
+        "role": "button",
+        "text": "Add to Cart",
+        "bbox": {
+          "x": 25,
+          "y": 519,
+          "width": 111,
+          "height": 39,
+          "top": 519,
+          "left": 25,
+          "right": 136,
+          "bottom": 558
+        },
+        "interactive": true,
+        "attributes": {
+          "id": null,
+          "name": null,
+          "type": null,
+          "href": null,
+          "placeholder": null,
+          "value": null,
+          "disabled": false,
+          "readonly": false
+        }
+      }
+    },
+    {
+      "id": "elem_17",
+      "role_label": "button_show_alert",
+      "confidence": 0.845,
+      "score_breakdown": {
+        "role_semantic": 1.0,
+        "interactivity": 1.0,
+        "accessible_name": 0.6,
+        "selector_stability": 0.5,
+        "visual_prominence": 1.0,
+        "text_clarity": 1.0
+      },
+      "selectors": {
+        "primary": "[role='button']:has-text('Show Alert')",
+        "fallbacks": [
+          "body > main > section > button.btn.btn-secondary:has-text('Show Alert')",
+          ":text('Show Alert')",
+          "body > main > section > button.btn.btn-secondary",
+          "button:nth-of-type(1)"
+        ]
+      },
+      "accessible_name": null,
+      "element": {
+        "tagName": "button",
+        "role": "button",
+        "text": "Show Alert",
+        "bbox": {
+          "x": 151,
+          "y": 519,
+          "width": 108,
+          "height": 39,
+          "top": 519,
+          "left": 151,
+          "right": 259,
+          "bottom": 558
+        },
+        "interactive": true,
+        "attributes": {
+          "id": null,
+          "name": null,
+          "type": null,
+          "href": null,
+          "placeholder": null,
+          "value": null,
+          "disabled": false,
+          "readonly": false
+        }
+      }
+    },
+    {
+      "id": "elem_18",
+      "role_label": "button_elem_18",
+      "confidence": 0.868,
+      "score_breakdown": {
+        "role_semantic": 1.0,
+        "interactivity": 1.0,
+        "accessible_name": 0.8,
+        "selector_stability": 0.85,
+        "visual_prominence": 1.0,
+        "text_clarity": 0.3
+      },
+      "selectors": {
+        "primary": "[aria-label='Close dialog']",
+        "fallbacks": [
+          "[role='button']:has-text('×')",
+          "body > main > section > button.close-btn:has-text('×')",
+          "body > main > section > button.close-btn",
+          "button:nth-of-type(1)"
+        ]
+      },
+      "accessible_name": null,
+      "element": {
+        "tagName": "button",
+        "role": "button",
+        "text": "×",
+        "bbox": {
+          "x": 273,
+          "y": 519,
+          "width": 52,
+          "height": 39,
+          "top": 519,
+          "left": 273,
+          "right": 325,
+          "bottom": 558
+        },
+        "interactive": true,
+        "attributes": {
+          "id": null,
+          "name": null,
+          "type": null,
+          "href": null,
+          "placeholder": null,
+          "value": null,
+          "disabled": false,
+          "readonly": false
+        }
+      }
+    },
+    {
+      "id": "elem_19",
+      "role_label": "region_form_controls_select_country_i",
+      "confidence": 0.415,
+      "score_breakdown": {
+        "role_semantic": 0.5,
+        "interactivity": 0.0,
+        "accessible_name": 0.6,
+        "selector_stability": 0.4,
+        "visual_prominence": 0.5,
+        "text_clarity": 0.6
+      },
+      "selectors": {
+        "primary": "body > main > section",
+        "fallbacks": [
+          "section:nth-of-type(1)"
+        ]
+      },
+      "accessible_name": null,
+      "element": {
+        "tagName": "section",
+        "role": "region",
+        "text": "Form Controls Select country Indonesia United States I agree to terms and conditions Male Female",
+        "bbox": {
+          "x": 20,
+          "y": 587,
+          "width": 680,
+          "height": 220,
+          "top": 587,
+          "left": 20,
+          "right": 700,
+          "bottom": 807
+        },
+        "interactive": false,
+        "attributes": {
+          "id": null,
+          "name": null,
+          "type": null,
+          "href": null,
+          "placeholder": null,
+          "value": null,
+          "disabled": false,
+          "readonly": false
+        }
+      }
+    },
+    {
+      "id": "elem_20",
+      "role_label": "heading_form_controls",
+      "confidence": 0.57,
+      "score_breakdown": {
+        "role_semantic": 0.7,
+        "interactivity": 0.0,
+        "accessible_name": 0.6,
+        "selector_stability": 0.5,
+        "visual_prominence": 1.0,
+        "text_clarity": 1.0
+      },
+      "selectors": {
+        "primary": "[role='heading']:has-text('Form Controls')",
+        "fallbacks": [
+          ":text('Form Controls')",
+          "body > main > section > h2",
+          "h2:nth-of-type(1)"
+        ]
+      },
+      "accessible_name": null,
+      "element": {
+        "tagName": "h2",
+        "role": "heading",
+        "text": "Form Controls",
+        "bbox": {
+          "x": 20,
+          "y": 587,
+          "width": 680,
+          "height": 28,
+          "top": 587,
+          "left": 20,
+          "right": 700,
+          "bottom": 615
+        },
+        "interactive": false,
+        "attributes": {
+          "id": null,
+          "name": null,
+          "type": null,
+          "href": null,
+          "placeholder": null,
+          "value": null,
+          "disabled": false,
+          "readonly": false
+        }
+      }
+    },
+    {
+      "id": "elem_21",
+      "role_label": "combobox_country",
+      "confidence": 0.92,
+      "score_breakdown": {
+        "role_semantic": 1.0,
+        "interactivity": 1.0,
+        "accessible_name": 0.6,
+        "selector_stability": 1.0,
+        "visual_prominence": 1.0,
+        "text_clarity": 1.0
+      },
+      "selectors": {
+        "primary": "#country",
+        "fallbacks": [
+          "select[name='country']",
+          "[role='combobox']:has-text('Select country Indonesia Unite')",
+          ":text('Select country Indonesia Unite')",
+          "#country",
+          "select:nth-of-type(1)"
+        ]
+      },
+      "accessible_name": null,
+      "element": {
+        "tagName": "select",
+        "role": "combobox",
+        "text": "Select country Indonesia United States",
+        "bbox": {
+          "x": 20,
+          "y": 635,
+          "width": 107,
+          "height": 19,
+          "top": 635,
+          "left": 20,
+          "right": 127,
+          "bottom": 654
+        },
+        "interactive": true,
+        "attributes": {
+          "id": "country",
+          "name": "country",
+          "type": null,
+          "href": null,
+          "placeholder": null,
+          "value": null,
+          "disabled": false,
+          "readonly": false
+        }
+      }
+    },
+    {
+      "id": "elem_22",
+      "role_label": "textbox_agree",
+      "confidence": 0.73,
+      "score_breakdown": {
+        "role_semantic": 1.0,
+        "interactivity": 1.0,
+        "accessible_name": 0.1,
+        "selector_stability": 1.0,
+        "visual_prominence": 1.0,
+        "text_clarity": 0.1
+      },
+      "selectors": {
+        "primary": "#agree",
+        "fallbacks": [
+          "input[name='agree']",
+          "#agree",
+          "input:nth-of-type(1)"
+        ]
+      },
+      "accessible_name": null,
+      "element": {
+        "tagName": "input",
+        "role": "textbox",
+        "text": "",
+        "bbox": {
+          "x": 20,
+          "y": 664,
+          "width": 300,
+          "height": 13,
+          "top": 664,
+          "left": 20,
+          "right": 320,
+          "bottom": 677
+        },
+        "interactive": true,
+        "attributes": {
+          "id": "agree",
+          "name": "agree",
+          "type": "checkbox",
+          "href": null,
+          "placeholder": null,
+          "value": "on",
+          "disabled": false,
+          "readonly": false
+        }
+      }
+    },
+    {
+      "id": "elem_23",
+      "role_label": "textbox_male",
+      "confidence": 0.73,
+      "score_breakdown": {
+        "role_semantic": 1.0,
+        "interactivity": 1.0,
+        "accessible_name": 0.1,
+        "selector_stability": 1.0,
+        "visual_prominence": 1.0,
+        "text_clarity": 0.1
+      },
+      "selectors": {
+        "primary": "#male",
+        "fallbacks": [
+          "input[name='gender']",
+          "#male",
+          "input:nth-of-type(1)"
+        ]
+      },
+      "accessible_name": null,
+      "element": {
+        "tagName": "input",
+        "role": "textbox",
+        "text": "",
+        "bbox": {
+          "x": 20,
+          "y": 715,
+          "width": 300,
+          "height": 13,
+          "top": 715,
+          "left": 20,
+          "right": 320,
+          "bottom": 728
+        },
+        "interactive": true,
+        "attributes": {
+          "id": "male",
+          "name": "gender",
+          "type": "radio",
+          "href": null,
+          "placeholder": null,
+          "value": "male",
+          "disabled": false,
+          "readonly": false
+        }
+      }
+    },
+    {
+      "id": "elem_24",
+      "role_label": "textbox_female",
+      "confidence": 0.73,
+      "score_breakdown": {
+        "role_semantic": 1.0,
+        "interactivity": 1.0,
+        "accessible_name": 0.1,
+        "selector_stability": 1.0,
+        "visual_prominence": 1.0,
+        "text_clarity": 0.1
+      },
+      "selectors": {
+        "primary": "#female",
+        "fallbacks": [
+          "input[name='gender']",
+          "#female",
+          "input:nth-of-type(1)"
+        ]
+      },
+      "accessible_name": null,
+      "element": {
+        "tagName": "input",
+        "role": "textbox",
+        "text": "",
+        "bbox": {
+          "x": 20,
+          "y": 766,
+          "width": 300,
+          "height": 13,
+          "top": 766,
+          "left": 20,
+          "right": 320,
+          "bottom": 779
+        },
+        "interactive": true,
+        "attributes": {
+          "id": "female",
+          "name": "gender",
+          "type": "radio",
+          "href": null,
+          "placeholder": null,
+          "value": "female",
+          "disabled": false,
+          "readonly": false
+        }
+      }
+    },
+    {
+      "id": "elem_25",
+      "role_label": "region_hidden_element_should_not_be",
+      "confidence": 0.465,
+      "score_breakdown": {
+        "role_semantic": 0.5,
+        "interactivity": 0.0,
+        "accessible_name": 0.6,
+        "selector_stability": 0.4,
+        "visual_prominence": 1.0,
+        "text_clarity": 0.6
+      },
+      "selectors": {
+        "primary": "body > main > section",
+        "fallbacks": [
+          "section:nth-of-type(1)"
+        ]
+      },
+      "accessible_name": null,
+      "element": {
+        "tagName": "section",
+        "role": "region",
+        "text": "Hidden Element (should not be detected) Hidden Button",
+        "bbox": {
+          "x": 20,
+          "y": 827,
+          "width": 680,
+          "height": 28,
+          "top": 827,
+          "left": 20,
+          "right": 700,
+          "bottom": 855
+        },
+        "interactive": false,
+        "attributes": {
+          "id": null,
+          "name": null,
+          "type": null,
+          "href": null,
+          "placeholder": null,
+          "value": null,
+          "disabled": false,
+          "readonly": false
+        }
+      }
+    },
+    {
+      "id": "elem_26",
+      "role_label": "heading_hidden_element_should_not_be",
+      "confidence": 0.57,
+      "score_breakdown": {
+        "role_semantic": 0.7,
+        "interactivity": 0.0,
+        "accessible_name": 0.6,
+        "selector_stability": 0.5,
+        "visual_prominence": 1.0,
+        "text_clarity": 1.0
+      },
+      "selectors": {
+        "primary": "[role='heading']:has-text('Hidden Element (should not be ')",
+        "fallbacks": [
+          ":text('Hidden Element (should not be ')",
+          "body > main > section > h2",
+          "h2:nth-of-type(1)"
+        ]
+      },
+      "accessible_name": null,
+      "element": {
+        "tagName": "h2",
+        "role": "heading",
+        "text": "Hidden Element (should not be detected)",
+        "bbox": {
+          "x": 20,
+          "y": 827,
+          "width": 680,
+          "height": 28,
+          "top": 827,
+          "left": 20,
+          "right": 700,
+          "bottom": 855
+        },
+        "interactive": false,
+        "attributes": {
+          "id": null,
+          "name": null,
+          "type": null,
+          "href": null,
+          "placeholder": null,
+          "value": null,
+          "disabled": false,
+          "readonly": false
+        }
+      }
+    },
+    {
+      "id": "elem_27",
+      "role_label": "contentinfo_2026_test_website",
+      "confidence": 0.52,
+      "score_breakdown": {
+        "role_semantic": 0.5,
+        "interactivity": 0.0,
+        "accessible_name": 0.6,
+        "selector_stability": 0.5,
+        "visual_prominence": 1.0,
+        "text_clarity": 1.0
+      },
+      "selectors": {
+        "primary": "[role='contentinfo']:has-text('© 2026 Test Website')",
+        "fallbacks": [
+          ":text('© 2026 Test Website')",
+          "body > footer",
+          "footer:nth-of-type(1)"
+        ]
+      },
+      "accessible_name": null,
+      "element": {
+        "tagName": "footer",
+        "role": "contentinfo",
+        "text": "© 2026 Test Website",
+        "bbox": {
+          "x": 20,
+          "y": 875,
+          "width": 680,
+          "height": 18,
+          "top": 875,
+          "left": 20,
+          "right": 700,
+          "bottom": 893
+        },
+        "interactive": false,
+        "attributes": {
+          "id": null,
+          "name": null,
+          "type": null,
+          "href": null,
+          "placeholder": null,
+          "value": null,
+          "disabled": false,
+          "readonly": false
+        }
+      }
+    }
+  ],
+  "statistics": {
+    "confidence_distribution": {
+      "high": 8,
+      "medium": 6,
+      "low": 14
+    },
+    "average_confidence": 0.665,
+    "roles_detected": {
+      "banner": 1,
+      "heading": 5,
+      "navigation": 1,
+      "link": 3,
+      "main": 1,
+      "region": 4,
+      "form": 1,
+      "textbox": 5,
+      "button": 5,
+      "combobox": 1,
+      "contentinfo": 1
+    },
+    "interactive_elements": 14
+  }
+}

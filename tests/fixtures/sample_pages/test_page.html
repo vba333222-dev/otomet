@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sample Page - Testing DOM Scanner</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 800px; margin: 50px auto; padding: 20px; }
+        button { margin: 10px 5px; padding: 10px 20px; }
+        input { margin: 10px 0; padding: 8px; width: 300px; display: block; }
+        .hidden { display: none; }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Sample Test Page</h1>
+        <nav role="navigation">
+            <a href="/" id="home-link">Home</a>
+            <a href="/about" aria-label="About us page">About</a>
+            <a href="/contact" data-testid="contact-link">Contact</a>
+        </nav>
+    </header>
+    
+    <main role="main">
+        <section>
+            <h2>Login Form</h2>
+            <form id="login-form" role="form">
+                <label for="email">Email:</label>
+                <input type="email" id="email" name="email" placeholder="Enter your email" required>
+                
+                <label for="password">Password:</label>
+                <input type="password" id="password" name="password" placeholder="Enter your password" required>
+                
+                <button type="submit" id="submit-btn" aria-label="Submit login form">Login</button>
+                <button type="button" disabled>Disabled Button</button>
+            </form>
+        </section>
+        
+        <section>
+            <h2>Interactive Elements</h2>
+            <button data-testid="add-to-cart" class="btn btn-primary">Add to Cart</button>
+            <button class="btn btn-secondary" onclick="alert('clicked')">Show Alert</button>
+            <button aria-label="Close dialog" class="close-btn">×</button>
+        </section>
+        
+        <section>
+            <h2>Form Controls</h2>
+            <select name="country" id="country">
+                <option value="">Select country</option>
+                <option value="id">Indonesia</option>
+                <option value="us">United States</option>
+            </select>
+            
+            <input type="checkbox" id="agree" name="agree">
+            <label for="agree">I agree to terms and conditions</label>
+            
+            <input type="radio" id="male" name="gender" value="male">
+            <label for="male">Male</label>
+            <input type="radio" id="female" name="gender" value="female">
+            <label for="female">Female</label>
+        </section>
+        
+        <section>
+            <h2>Hidden Element (should not be detected)</h2>
+            <button class="hidden">Hidden Button</button>
+        </section>
+    </main>
+    
+    <footer role="contentinfo">
+        <p>&copy; 2026 Test Website</p>
+    </footer>
+</body>
+</html>

@@ -1,0 +1,69 @@
+<div class="border rounded-lg p-4 hover:shadow-md transition-shadow 
+    {% if element.confidence >= 0.8 %}border-green-200 bg-green-50
+    {% elif element.confidence >= 0.6 %}border-yellow-200 bg-yellow-50
+    {% else %}border-red-200 bg-red-50{% endif %}">
+    
+    <div class="flex items-start justify-between">
+        <div class="flex-1">
+            <div class="flex items-center space-x-3">
+                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                    {{ element.role_label or 'unknown' }}
+                </span>
+                <span class="text-xs text-gray-500">{{ element.tag_name }}</span>
+                {% if element.auto_approved %}
+                <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-purple-100 text-purple-800">
+                    Auto-approved
+                </span>
+                {% endif %}
+            </div>
+            
+            <p class="mt-2 text-sm text-gray-900 font-medium">{{ element.text_content[:100] }}{% if element.text_content|length > 100 %}...{% endif %}</p>
+            
+            <div class="mt-3 grid grid-cols-2 gap-3 text-xs">
+                <div>
+                    <span class="text-gray-500">Confidence:</span>
+                    <span class="ml-1 font-semibold {% if element.confidence >= 0.8 %}text-green-600
+                        {% elif element.confidence >= 0.6 %}text-yellow-600
+                        {% else %}text-red-600{% endif %}">
+                        {{ "%.3f"|format(element.confidence) }}
+                    </span>
+                </div>
+                <div>
+                    <span class="text-gray-500">Selector:</span>
+                    <code class="ml-1 text-xs bg-gray-100 px-1 py-0.5 rounded">{{ element.css_selector[:30] }}...</code>
+                </div>
+                {% if element.xpath_selector %}
+                <div class="col-span-2">
+                    <span class="text-gray-500">XPath:</span>
+                    <code class="ml-1 text-xs bg-gray-100 px-1 py-0.5 rounded">{{ element.xpath_selector[:50] }}...</code>
+                </div>
+                {% endif %}
+            </div>
+
+            {% if element.bounding_box %}
+            <div class="mt-3 text-xs text-gray-600">
+                <span class="text-gray-500">Position:</span>
+                x={{ element.bounding_box.x }}, y={{ element.bounding_box.y }}, 
+                w={{ element.bounding_box.width }}, h={{ element.bounding_box.height }}
+            </div>
+            {% endif %}
+        </div>
+
+        <div class="ml-4 flex-shrink-0 flex flex-col space-y-2">
+            <button 
+                hx-post="/api/elements/{{ element.id }}/approve"
+                hx-swap="outerHTML"
+                hx-target="closest div"
+                class="px-3 py-1 text-xs font-medium rounded-md 
+                    {% if element.auto_approved %}bg-gray-100 text-gray-400 cursor-not-allowed
+                    {% else %}bg-blue-600 text-white hover:bg-blue-700{% endif %}"
+                {% if element.auto_approved %}disabled{% endif %}>
+                {% if element.auto_approved %}Approved{% else %}Approve{% endif %}
+            </button>
+            <a href="/api/elements/{{ element.id }}/view" 
+               class="px-3 py-1 text-xs font-medium rounded-md text-gray-700 bg-gray-100 hover:bg-gray-200 text-center">
+                Details
+            </a>
+        </div>
+    </div>
+</div>

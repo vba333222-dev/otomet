@@ -1,0 +1,30 @@
+# Phase 1 - DOM Scanner & Scorer
+playwright==1.48.0
+rapidfuzz==3.10.1
+rich==13.9.4
+pytest==8.3.3
+pytest-asyncio==0.24.0
+
+# Phase 2 - Database (SQLite + WAL mode)
+aiosqlite==0.20.0
+
+# Phase 3 - Dashboard (FastAPI + htmx)
+fastapi==0.115.5
+uvicorn[standard]==0.32.1
+jinja2==3.1.4
+python-multipart==0.0.17
+
+# Untuk injeksi axe-core (akan diunduh via CDN di runtime)
+# dom-accessibility-api tersedia via CDN juga
+
+# Phase 6 - Orchestrator (device pool fisik Redmi 12C)
+# Opsional tapi disarankan: wrapper ADB yang lebih stabil dari `adb devices`.
+adbutils==2.7.0
+
+# Phase 7 - Execution Engine paralel (Appium multi-device)
+Appium-Python-Client==6.0.7
+
+# Phase 8 - Pelaporan & Export (tanpa ADB fisik)
+openpyxl==3.1.5
+
+

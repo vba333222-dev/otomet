@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+{% block title %}{{ scenario.nama_fungsi }} v{{ scenario.versi }}{% endblock %}
+{% block content %}
+<div class="space-y-6">
+<nav class="flex text-sm"><ol class="flex items-center space-x-2">
+<li><a href="/api/clients/{{ client.id }}/view" class="text-gray-400">{{ client.nama }}</a></li>
+<li><span class="text-gray-300">/</span></li>
+<li><a href="/api/scenarios/client/{{ client.id }}/view" class="text-gray-400">Skenario</a></li>
+<li><span class="text-gray-300">/</span></li>
+<li><span class="text-gray-900">{{ scenario.nama_fungsi }} v{{ scenario.versi }}</span></li>
+</ol></nav>
+<div class="bg-white shadow rounded-lg p-6">
+<h2 class="text-2xl font-bold">{{ scenario.nama_fungsi }} <span class="text-sm bg-blue-100 text-blue-800 px-2 py-1 rounded">v{{ scenario.versi }}</span></h2>
+<p class="text-xs text-gray-500 mt-1">ID {{ scenario.id }} &bull; {{ scenario.created_at }}</p>
+<div class="mt-4 space-y-2">
+{% for st in scenario.steps %}
+<div class="border rounded p-3 text-sm bg-gray-50">
+<span class="font-bold">{{ loop.index }}.</span>
+<span class="px-2 py-0.5 rounded bg-purple-100 text-purple-800 text-xs">{{ st.action }}</span>
+<span class="px-2 py-0.5 rounded bg-blue-100 text-blue-800 text-xs">{{ st.role_label }}</span>
+{% if st.page_id %}<span class="text-xs text-gray-500">page {{ st.page_id }} ({{ peta_page.get(st.page_id, '')[:40] }})</span>{% endif %}
+{% if st.params %}<code class="block mt-1 text-xs bg-white p-1 rounded">{{ st.params }}</code>{% endif %}
+</div>
+{% endfor %}
+</div>
+<div class="mt-4 flex space-x-2">
+<a href="/api/scenarios/builder/view?client_id={{ client.id }}&copy_from={{ scenario.id }}" class="px-4 py-2 text-sm bg-blue-600 text-white rounded-md">Edit jadi versi baru</a>
+<button onclick="cekGate({{ scenario.id }})" class="px-4 py-2 text-sm bg-orange-600 text-white rounded-md">Cek Gate Recalibration</button>
+</div>
+<p id="gate-pesan" class="text-sm mt-2"></p>
+</div>
+{% if diff %}
+<div class="bg-white shadow rounded-lg p-6">
+<h3 class="font-medium mb-2">Diff vs v{{ versi_sebelumnya.versi }}</h3>
+{% for d in diff %}
+<div class="text-sm border rounded p-2 mb-1">Step {{ d.index }} berubah:<br><span class="text-red-600">{{ d.lama }}</span><br><span class="text-green-600">{{ d.baru }}</span></div>
+{% endfor %}
+</div>
+{% endif %}
+<div class="bg-white shadow rounded-lg p-6">
+<h3 class="font-medium mb-2">Riwayat Versi ({{ versions|length }})</h3>
+<div class="space-y-2">
+{% for v in versions %}
+<div class="flex justify-between items-center border rounded p-2 text-sm {% if v.id == scenario.id %}border-blue-400 bg-blue-50{% endif %}">
+<span>v{{ v.versi }} &bull; {{ v.steps|length }} steps &bull; {{ v.created_at }}</span>
+<div class="space-x-1">
+<a href="/api/scenarios/{{ v.id }}/view" class="px-2 py-1 text-xs bg-gray-100 rounded">Lihat</a>
+{% if v.id != scenario.id %}
+<button onclick="rollback({{ scenario.id }}, {{ v.versi }})" class="px-2 py-1 text-xs bg-yellow-100 rounded hover:bg-yellow-200">Rollback ke v{{ v.versi }}</button>
+{% endif %}
+</div>
+</div>
+{% endfor %}
+</div>
+<p class="text-xs text-gray-500 mt-2">Rollback membuat versi baru (audit terjaga), tidak menghapus versi lama.</p>
+</div>
+</div>
+{% endblock %}
+{% block scripts %}
+<script>
+async function rollback(scenarioId, targetVersi) {
+  if (!confirm('Rollback ke v' + targetVersi + '? Akan dibuat sebagai versi baru.')) return;
+  const r = await fetch('/api/scenarios/' + scenarioId + '/rollback', {
+    method: 'POST', headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({target_versi: targetVersi})
+  });
+  const d = await r.json();
+  if (r.ok) { alert('Rollback berhasil jadi v' + d.versi); location.href = '/api/scenarios/' + d.id + '/view'; }
+  else { alert('Rollback gagal: ' + JSON.stringify(d.detail || d)); }
+}
+async function cekGate(scenarioId) {
+  const el = document.getElementById('gate-pesan');
+  el.textContent = 'Mengecek gate recalibration...';
+  el.className = 'text-sm mt-2 text-gray-600';
+  const r = await fetch('/api/recalibration/scenarios/' + scenarioId + '/gate');
+  const d = await r.json();
+  if (!r.ok) { el.textContent = 'Gate gagal: ' + JSON.stringify(d.detail || d); el.className = 'text-sm mt-2 text-red-700'; return; }
+  if (d.boleh_jalan) { el.textContent = 'BOLEH JALAN: ' + d.alasan; el.className = 'text-sm mt-2 text-green-700'; }
+  else { el.textContent = 'TERTAHAN: ' + d.alasan + ' ' + JSON.stringify(d.detail); el.className = 'text-sm mt-2 text-red-700'; }
+}
+</script>
+{% endblock %}

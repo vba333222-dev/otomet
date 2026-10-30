@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+{% block title %}Recalibration - {{ page.url[:50] }}{% endblock %}
+{% block content %}
+<div class="space-y-6">
+<nav class="flex text-sm"><ol class="flex items-center space-x-2">
+<li><a href="/api/clients/{{ client.id }}/view" class="text-gray-400">{{ client.nama }}</a></li>
+<li><span class="text-gray-300">/</span></li>
+<li><a href="/api/pages/{{ page.id }}/view" class="text-gray-400">Page</a></li>
+<li><span class="text-gray-300">/</span></li>
+<li><span class="text-gray-900">Recalibration</span></li>
+</ol></nav>
+<div class="bg-white shadow rounded-lg p-6">
+<h2 class="text-2xl font-bold break-all">Recalibration</h2>
+<p class="text-sm text-gray-500 mt-1 break-all">{{ page.url }}</p>
+<div class="mt-3 flex items-center space-x-2 text-sm">
+<span class="px-2 py-1 rounded bg-blue-100 text-blue-800">sim {{ client.threshold_similarity }}</span>
+<span class="px-2 py-1 rounded bg-green-100 text-green-800">pos {{ client.threshold_posisi }}</span>
+<span class="px-2 py-1 rounded bg-purple-100 text-purple-800">fallback {{ client.threshold_tinggi_fallback }}</span>
+</div>
+<div class="mt-4 flex space-x-2">
+<button onclick="jalankan({{ page.id }})" class="px-4 py-2 text-sm bg-orange-600 text-white rounded-md hover:bg-orange-700">Jalankan Recalibration</button>
+<a href="/api/pages/{{ page.id }}/view" class="px-4 py-2 text-sm bg-gray-100 rounded-md">Kembali ke Page</a>
+</div>
+<p id="pesan" class="text-sm mt-2 text-gray-600"></p>
+{% if terakhir %}
+<div class="mt-4 text-sm border rounded p-3 bg-gray-50">
+Terakhir: log #{{ terakhir.id }} ({{ terakhir.created_at }}) — batch <code>{{ terakhir.run_batch_id }}</code>
+<a href="/api/recalibration/logs/{{ terakhir.id }}/view" class="text-blue-600 underline ml-2">Lihat diff</a>
+</div>
+{% else %}
+<div class="mt-4 text-sm border rounded p-3 bg-yellow-50 text-yellow-800">Belum pernah direkalibrasi. Wajib sebelum tiap run (S4.3).</div>
+{% endif %}
+</div>
+<div class="bg-white shadow rounded-lg p-6">
+<h3 class="font-medium mb-2">Riwayat ({{ logs|length }})</h3>
+<div class="space-y-2">
+{% for l in logs %}
+<div class="flex justify-between items-center border rounded p-2 text-sm">
+<span>#{{ l.id }} &bull; {{ l.created_at }} &bull; <code>{{ l.run_batch_id }}</code> &bull; {{ l.hasil|length }} elemen</span>
+<a href="/api/recalibration/logs/{{ l.id }}/view" class="px-2 py-1 text-xs bg-gray-100 rounded">Lihat</a>
+</div>
+{% else %}
+<p class="text-sm text-gray-500">Belum ada riwayat.</p>
+{% endfor %}
+</div>
+</div>
+</div>
+{% endblock %}
+{% block scripts %}
+<script>
+async function jalankan(pageId) {
+  const el = document.getElementById('pesan');
+  el.textContent = 'Menjalankan headless scan + matching...';
+  const r = await fetch('/api/recalibration/pages/' + pageId + '/run', {method: 'POST', headers: {'Content-Type': 'application/json'}, body: '{}'});
+  const d = await r.json();
+  if (!r.ok) { el.textContent = 'Gagal: ' + JSON.stringify(d.detail || d); return; }
+  el.textContent = 'Selesai: ' + d.ringkasan.calibrated + ' calibrated, ' + d.ringkasan.recalibrated + ' recalibrated, ' + d.ringkasan.blocked + ' blocked. boleh_jalan=' + d.boleh_jalan;
+  setTimeout(() => { window.location.href = '/api/recalibration/logs/' + d.log_id + '/view'; }, 800);
+}
+</script>
+{% endblock %}

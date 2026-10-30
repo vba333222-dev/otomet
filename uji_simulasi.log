@@ -1,0 +1,16 @@
+=== UJI SIMULASI START ===
+sid=1
+POST simulate -> 200 body[:800]={"session_id":1,"ringkasan":{"total":2,"passed":2,"failed":0,"blocked":0},"hasil":[{"assignment_id":1,"run_id":4,"status":"passed","steps_ok":[{"ok":true,"action":"open_url","url":"https://example.com","step_index":0}],"test_data_id":2},{"assignment_id":2,"run_id":3,"status":"passed","steps_ok":[{"ok":true,"action":"open_url","url":"","step_index":0}],"test_data_id":null}],"data_ganda":false,"alasan":"2/2 passed."}
+ringkasan={'total': 2, 'passed': 2, 'failed': 0, 'blocked': 0} data_ganda=False alasan=2/2 passed.
+GET runs -> 200 body[:800]={"session_id":1,"ringkasan":{"total":4,"passed":2,"failed":2,"blocked":0,"running":0},"runs":[{"id":1,"scenario_assignment_id":2,"test_data_id":null,"started_at":"2026-09-26 17:30:25","completed_at":"2026-09-26 17:30:26","status":"failed","failure_category":"validation_error","log_path":null,"screenshot_dir":null,"video_path":null,"device_id":2,"scenario_id":1},{"id":2,"scenario_assignment_id":1,"test_data_id":1,"started_at":"2026-09-26 17:30:25","completed_at":"2026-09-26 17:30:25","status":"failed","failure_category":"validation_error","log_path":null,"screenshot_dir":null,"video_path":null,"device_id":1,"scenario_id":1},{"id":3,"scenario_assignment_id":2,"test_data_id":null,"started_at":"2026-09-26 17:54:04","completed_at":"2026-09-26 17:54:07","status":"passed","failure_category":null,
+GET /api/reports/sessions/1/summary -> 200 len=2325
+GET /api/reports/sessions/1/pdf -> 200 len=1310
+GET /api/reports/sessions/1/xlsx -> 200 len=6077
+GET /api/reports/sessions/1/view -> 200 len=5553
+GET /api/runs/sessions/1/runs/view -> 200 len=6887
+DATA_GANDA sid=1 rows=0 (0=aman) detail=[]
+RUN (4, 1, 2, 'passed', None)
+RUN (3, 2, None, 'passed', None)
+RUN (2, 1, 1, 'failed', 'validation_error')
+RUN (1, 2, None, 'failed', 'validation_error')
+=== UJI SIMULASI DONE ===

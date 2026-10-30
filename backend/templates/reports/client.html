@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+{% block title %}Laporan {{ lap.client.nama }}{% endblock %}
+{% block content %}
+<div class="space-y-6">
+<nav class="flex text-sm"><ol class="flex items-center space-x-2">
+<li><a href="/api/clients/view" class="text-gray-400">Clients</a></li><li><span class="text-gray-300">/</span></li>
+<li><a href="/api/clients/{{ lap.client.id }}/view" class="text-gray-400">{{ lap.client.nama }}</a></li><li><span class="text-gray-300">/</span></li>
+<li><span class="text-gray-900">Laporan</span></ol></nav>
+<div class="bg-white shadow rounded-lg p-6">
+<h2 class="text-2xl font-bold">Laporan {{ lap.client.nama }}</h2>
+<p class="text-xs text-gray-500 mt-1">{{ lap.client.base_url }} &bull; {{ lap.jumlah_sesi }} sesi &bull; pass-rate {{ lap.pass_rate }}</p>
+<div class="mt-3 flex space-x-2 text-sm flex-wrap">
+<span class="px-2 py-0.5 rounded bg-gray-100">Total {{ lap.ringkasan.total }}</span>
+<span class="px-2 py-0.5 rounded bg-green-100 text-green-800">Passed {{ lap.ringkasan.passed }}</span>
+<span class="px-2 py-0.5 rounded bg-red-100 text-red-800">Failed {{ lap.ringkasan.failed }}</span>
+<span class="px-2 py-0.5 rounded bg-yellow-100 text-yellow-800">Blocked {{ lap.ringkasan.blocked }}</span>
+<span class="px-2 py-0.5 rounded bg-blue-100 text-blue-800">Running {{ lap.ringkasan.running }}</span>
+</div>
+<div class="mt-4 flex space-x-2">
+<a href="/api/reports/clients/{{ lap.client.id }}/pdf" class="px-3 py-1 text-sm bg-red-600 text-white rounded">Export PDF</a>
+<a href="/api/reports/clients/{{ lap.client.id }}/xlsx" class="px-3 py-1 text-sm bg-green-600 text-white rounded">Export Excel</a>
+</div>
+<p class="text-xs text-gray-500 mt-2">Tanpa ADB: murni agregat SQLite runs + sessions + assignments + recalibration log.</p>
+</div>
+<div class="bg-white shadow rounded-lg p-6">
+<h3 class="font-medium mb-2">Tren Pass-Rate per Sesi</h3>
+{% if lap.tren %}
+<canvas id="tren-chart" height="120"></canvas>
+<p class="text-xs text-gray-500 mt-1">Hijau = passed, merah = failed, kuning = blocked (tumpuk per sesi).</p>
+{% else %}<p class="text-sm text-gray-500">Belum ada sesi untuk tren.</p>{% endif %}
+</div>
+<div class="bg-white shadow rounded-lg p-6">
+<h3 class="font-medium mb-2">Per Sesi ({{ lap.per_sesi|length }})</h3>
+<div class="space-y-2 text-sm">
+{% for s in lap.per_sesi %}<div class="border rounded p-2 flex justify-between"><span>#{{ s.session_id }} {{ s.pair_label or '' }} &bull; {{ s.status }} &bull; {{ s.passed }}/{{ s.total }} ({{ s.pass_rate }})</span><a href="/api/reports/sessions/{{ s.session_id }}/view" class="px-2 py-0.5 text-xs bg-blue-100 rounded">Laporan</a></div>
+{% else %}<p class="text-gray-500">Belum ada sesi.</p>{% endfor %}
+</div></div>
+<div class="bg-white shadow rounded-lg p-6">
+<h3 class="font-medium mb-2">Kategori Gagal</h3>
+{% if lap.per_kategori_gagal %}
+<div class="space-y-1 text-sm">{% for k,v in lap.per_kategori_gagal.items() %}<div class="border rounded p-2 flex justify-between"><span class="font-mono">{{ k }}</span><span>{{ v }}</span></div>{% endfor %}</div>
+{% else %}<p class="text-sm text-gray-500">Tidak ada kegagalan tercatat.</p>{% endif %}
+</div>
+</div>
+{% endblock %}
+{% block scripts %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<script>
+(function(){
+  const el = document.getElementById('tren-chart');
+  if (!el) return;
+  const labels = [{% for t in lap.tren %}"{{ t.label }}"{% if not loop.last %},{% endif %}{% endfor %}];
+  const passed = [{% for t in lap.tren %}{{ t.passed }}{% if not loop.last %},{% endif %}{% endfor %}];
+  const failed = [{% for t in lap.tren %}{{ t.failed }}{% if not loop.last %},{% endif %}{% endfor %}];
+  const blocked = [{% for t in lap.tren %}{{ t.blocked }}{% if not loop.last %},{% endif %}{% endfor %}];
+  new Chart(el, {type: 'bar',
+    data: {labels: labels, datasets: [
+      {label: 'Passed', data: passed, backgroundColor: '#4CAF7D', borderColor: '#4CAF7D'},
+      {label: 'Failed', data: failed, backgroundColor: '#E15A4C', borderColor: '#E15A4C'},
+      {label: 'Blocked', data: blocked, backgroundColor: '#E0A64E', borderColor: '#E0A64E'}]},
+    options: {responsive: true, scales: {x: {stacked: true}, y: {stacked: true, beginAtZero: true}}}});
+})();
+</script>
+{% endblock %}

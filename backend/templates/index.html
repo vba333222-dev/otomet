@@ -1,0 +1,153 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard - Otomet{% endblock %}
+
+{% block content %}
+<div class="space-y-6">
+    <!-- Header -->
+    <div>
+        <h2 class="text-3xl font-bold text-gray-900">Dashboard</h2>
+        <p class="mt-2 text-sm text-gray-600">
+            Sistem Analisa Komponen Website & Automation Appium Multi-Device
+        </p>
+    </div>
+
+    <!-- Stats Cards -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        
+        <div class="bg-white overflow-hidden shadow rounded-lg">
+            <div class="p-5">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        <svg class="h-6 w-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
+                        </svg>
+                    </div>
+                    <div class="ml-5 w-0 flex-1">
+                        <dl>
+                            <dt class="text-sm font-medium text-gray-500 truncate">Total Clients</dt>
+                            <dd class="flex items-baseline">
+                                <div class="text-2xl font-semibold text-gray-900" id="total-clients">-</div>
+                            </dd>
+                        </dl>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-white overflow-hidden shadow rounded-lg">
+            <div class="p-5">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        <svg class="h-6 w-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                        </svg>
+                    </div>
+                    <div class="ml-5 w-0 flex-1">
+                        <dl>
+                            <dt class="text-sm font-medium text-gray-500 truncate">Pages Analyzed</dt>
+                            <dd class="flex items-baseline">
+                                <div class="text-2xl font-semibold text-gray-900" id="total-pages">-</div>
+                            </dd>
+                        </dl>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-white overflow-hidden shadow rounded-lg">
+            <div class="p-5">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        <svg class="h-6 w-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01"></path>
+                        </svg>
+                    </div>
+                    <div class="ml-5 w-0 flex-1">
+                        <dl>
+                            <dt class="text-sm font-medium text-gray-500 truncate">Elements Detected</dt>
+                            <dd class="flex items-baseline">
+                                <div class="text-2xl font-semibold text-gray-900" id="total-elements">-</div>
+                            </dd>
+                        </dl>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Clients -->
+    <div class="bg-white shadow rounded-lg">
+        <div class="px-4 py-5 sm:p-6">
+            <h3 class="text-lg font-medium text-gray-900 mb-4">Recent Clients</h3>
+            <div id="clients-container">
+                <div class="flex items-center justify-center py-8">
+                    <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+                    <span class="ml-3 text-gray-500">Loading clients...</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Satu pintu: semua HP live + semua fungsi di satu layar -->
+    <div class="bg-purple-50 border border-purple-200 shadow rounded-lg">
+        <div class="px-4 py-5 sm:p-6 flex flex-wrap items-center justify-between gap-3">
+            <div>
+                <h3 class="text-lg font-medium text-gray-900">HP Live — layar tampil realtime</h3>
+                <p id="hp-ringkas" class="text-sm text-gray-600 mt-1">Memeriksa HP terhubung...</p>
+                <div id="hp-mini" class="mt-2 flex gap-2"></div>
+            </div>
+            <div class="flex flex-wrap gap-2">
+                <a href="/api/orchestrator/devices/view" class="px-4 py-2 text-sm bg-purple-600 text-white rounded-md">Buka HP Live &rarr;</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    // Ringkasan HP live: hitung + mini preview (satu pintu ke HP Live).
+    (async function(){
+      const el = document.getElementById('hp-ringkas');
+      const mini = document.getElementById('hp-mini');
+      if(!el) return;
+      try{
+        const r = await fetch('/api/orchestrator/devices/live');
+        if(!r.ok){ el.textContent = 'Belum bisa cek HP.'; return; }
+        const d = await r.json();
+        const live = d.live || [];
+        el.textContent = live.length
+          ? (live.length + ' HP live: ' + live.join(', '))
+          : 'Belum ada HP terdeteksi. Sambungkan ADB dulu.';
+        if(mini && live.length){
+          mini.innerHTML = live.slice(0,4).map(s =>
+            '<img src="/api/orchestrator/devices/screen?serial='+encodeURIComponent(s)+'&lebar=160&kualitas=45&t='+Date.now()+'" '
+            + 'class="h-20 rounded border bg-gray-900 object-contain" loading="lazy" alt="'+s+'">'
+          ).join('');
+        }
+      }catch(e){ el.textContent = 'Belum bisa cek HP.'; }
+    })();
+    // Statistik ringkas + daftar klien (tanpa htmx, JSON murni).
+    (async function(){
+      try{
+        const r = await fetch('/api/clients/');
+        if(!r.ok) return;
+        const data = await r.json();
+        const tc = document.getElementById('total-clients');
+        if(tc) tc.textContent = data.length;
+        const box = document.getElementById('clients-container');
+        if(!box) return;
+        if(!data.length){
+          box.innerHTML = '<p class="text-sm text-gray-500">Belum ada klien. Jalankan scanner dulu.</p>';
+          return;
+        }
+        box.innerHTML = data.slice(0,6).map(c =>
+          '<a href="/api/clients/'+c.id+'/view" class="block border rounded p-3 hover:border-blue-300" data-client-id="'+c.id+'">'
+          + '<p class="text-sm font-medium text-gray-900">'+c.nama+'</p>'
+          + '<p class="text-xs text-gray-500">'+c.base_url+'</p></a>'
+        ).join('');
+      }catch(e){}
+    })();
+</script>
+{% endblock %}

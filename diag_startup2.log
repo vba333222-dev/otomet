@@ -1,0 +1,115 @@
+=== DIAG START ===
+python=3.14.0 exe=C:\Python314\python.exe
+exists backend/static = True
+exists backend/templates = True
+exists backend/templates/runs = True
+exists backend/templates/runs/demo_real.html = True
+exists backend/templates/runs/session_runs.html = True
+exists backend/templates/index.html = True
+exists backend/templates/base.html = True
+exists backend/db/data/otomet.db = True
+exists backend/db/schema.sql = True
+IMPORT backend.app OK
+routes=74
+  route path=/openapi.json methods={'GET', 'HEAD'}
+  route path=/docs methods={'GET', 'HEAD'}
+  route path=/docs/oauth2-redirect methods={'GET', 'HEAD'}
+  route path=/redoc methods={'GET', 'HEAD'}
+  route path=/static methods=None
+  route path=/api/clients/ methods={'GET'}
+  route path=/api/clients/view methods={'GET'}
+  route path=/api/clients/{client_id} methods={'GET'}
+  route path=/api/clients/{client_id}/view methods={'GET'}
+  route path=/api/pages/{page_id} methods={'GET'}
+  route path=/api/pages/{page_id}/view methods={'GET'}
+  route path=/api/elements/{element_id} methods={'GET'}
+  route path=/api/elements/{element_id}/view methods={'GET'}
+  route path=/api/elements/{element_id}/approve methods={'POST'}
+  route path=/api/scenarios/client/{client_id} methods={'GET'}
+  route path=/api/scenarios/approved-roles methods={'GET'}
+  route path=/api/scenarios/validate methods={'POST'}
+  route path=/api/scenarios/ methods={'POST'}
+  route path=/api/scenarios/{scenario_id}/versions methods={'POST'}
+  route path=/api/scenarios/{scenario_id}/rollback methods={'POST'}
+  route path=/api/scenarios/client/{client_id}/view methods={'GET'}
+  route path=/api/scenarios/builder/view methods={'GET'}
+  route path=/api/scenarios/{scenario_id}/view methods={'GET'}
+  route path=/api/scenarios/{scenario_id} methods={'GET'}
+  route path=/api/recalibration/pages/{page_id}/run methods={'POST'}
+  route path=/api/recalibration/pages/{page_id}/history methods={'GET'}
+  route path=/api/recalibration/logs/{log_id} methods={'GET'}
+  route path=/api/recalibration/scenarios/{scenario_id}/gate methods={'GET'}
+  route path=/api/recalibration/clients/{client_id}/thresholds methods={'POST'}
+  route path=/api/recalibration/pages/{page_id}/view methods={'GET'}
+  route path=/api/recalibration/logs/{log_id}/view methods={'GET'}
+  route path=/api/orchestrator/devices methods={'GET'}
+  route path=/api/orchestrator/devices/adb methods={'GET'}
+  route path=/api/orchestrator/devices methods={'POST'}
+  route path=/api/orchestrator/devices/view methods={'GET'}
+  route path=/api/orchestrator/devices/{device_id} methods={'GET'}
+  route path=/api/orchestrator/devices/{device_id}/heartbeat methods={'POST'}
+  route path=/api/orchestrator/devices/{device_id}/health methods={'POST'}
+  route path=/api/orchestrator/devices/health-check methods={'POST'}
+  route path=/api/orchestrator/sessions methods={'POST'}
+  route path=/api/orchestrator/sessions/{session_id} methods={'GET'}
+  route path=/api/orchestrator/sessions/{session_id}/assign methods={'POST'}
+  route path=/api/orchestrator/sessions/{session_id}/finish methods={'POST'}
+  route path=/api/orchestrator/sessions/{session_id}/cancel methods={'POST'}
+  route path=/api/orchestrator/clients/{client_id}/sessions/view methods={'GET'}
+  route path=/api/orchestrator/sessions/{session_id}/view methods={'GET'}
+  route path=/api/broadcast/check methods={'POST'}
+  route path=/api/broadcast/run methods={'POST'}
+  route path=/api/broadcast/clients/{client_id}/view methods={'GET'}
+  route path=/api/broadcast/{broadcast_id} methods={'GET'}
+  route path=/api/runs/demo/real-2device methods={'POST'}
+  route path=/api/runs/test-data methods={'POST'}
+  route path=/api/runs/test-data/scenario/{scenario_id} methods={'GET'}
+  route path=/api/runs/test-data/scenario/{scenario_id}/claim methods={'POST'}
+  route path=/api/runs/test-data/{data_id} methods={'GET'}
+  route path=/api/runs/assignments/{assignment_id}/run methods={'POST'}
+  route path=/api/runs/sessions/{session_id}/run methods={'POST'}
+  route path=/api/runs/sessions/{session_id}/runs methods={'GET'}
+  route path=/api/runs/runs/{run_id} methods={'GET'}
+  route path=/api/runs/assignments/{assignment_id}/runs methods={'GET'}
+  route path=/api/runs/broadcast/physical methods={'POST'}
+  route path=/api/runs/demo/real-2device/view methods={'GET'}
+  route path=/api/runs/sessions/{session_id}/runs/view methods={'GET'}
+  route path=/api/reports/sessions/{session_id}/summary methods={'GET'}
+  route path=/api/reports/clients/{client_id}/summary methods={'GET'}
+  route path=/api/reports/clients/{client_id}/trend methods={'GET'}
+  route path=/api/reports/sessions/{session_id}/pdf methods={'GET'}
+  route path=/api/reports/sessions/{session_id}/xlsx methods={'GET'}
+  route path=/api/reports/clients/{client_id}/pdf methods={'GET'}
+  route path=/api/reports/clients/{client_id}/xlsx methods={'GET'}
+  route path=/api/reports/sessions/{session_id}/view methods={'GET'}
+  route path=/api/reports/clients/{client_id}/view methods={'GET'}
+  route path=/ methods={'GET'}
+  route path=/health methods={'GET'}
+IMPORT backend.api.clients OK
+IMPORT backend.api.pages OK
+IMPORT backend.api.elements OK
+IMPORT backend.api.scenarios OK
+IMPORT backend.api.recalibration OK
+IMPORT backend.api.orchestrator OK
+IMPORT backend.api.broadcast OK
+IMPORT backend.api.runs OK
+IMPORT backend.api.reports OK
+IMPORT backend.orchestrator.device_pool OK
+IMPORT backend.orchestrator.runner OK
+IMPORT backend.orchestrator.chrome_real OK
+IMPORT backend.db.database OK
+GET /health -> 200 len=27
+GET / -> 200 len=7979
+GET /api/runs/demo/real-2device/view -> 200 len=7174
+tables=['broadcast_action_devices', 'broadcast_actions', 'clients', 'devices', 'elements', 'pages', 'recalibration_log', 'runs', 'scenario_assignments', 'scenarios', 'sessions', 'sqlite_sequence', 'test_data_pool']
+pkg fastapi==0.135.1
+pkg uvicorn==0.41.0
+pkg jinja2==3.1.6
+pkg aiosqlite==0.20.0
+pkg python-multipart==0.0.22
+pkg adbutils==2.12.0
+pkg Appium-Python-Client==6.0.7
+pkg openpyxl==3.1.5
+pkg starlette==0.52.1
+pkg pydantic==2.12.5
+=== DIAG DONE ===

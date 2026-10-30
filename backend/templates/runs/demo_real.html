@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+{% block title %}Uji Nyata 2 HP - Otomet{% endblock %}
+{% block content %}
+<div class="space-y-6">
+<nav class="flex text-sm"><ol class="flex items-center space-x-2">
+<li><a href="/" class="text-gray-400">Dashboard</a></li><li><span class="text-gray-300">/</span></li>
+<li><a href="/api/orchestrator/devices/view" class="text-gray-400">HP Terhubung</a></li><li><span class="text-gray-300">/</span></li>
+<li><span class="text-gray-900">Uji Nyata 2 HP</span></ol></nav>
+<div class="bg-white shadow rounded-lg p-6">
+<h2 class="text-2xl font-bold">Uji Nyata Chrome 2 HP</h2>
+<p class="text-sm text-gray-600 mt-1">HP yang muncul di bawah otomatis dari <code>adb devices</code> — tinggal klik sekali, tak perlu ketik serial.</p>
+<p id="adb-pesan" class="text-sm mt-2 text-gray-600">Memuat HP terdeteksi...</p>
+<div id="adb-chips" class="mt-2 flex flex-wrap gap-2 text-sm"></div>
+<div class="mt-4 grid grid-cols-1 sm:grid-cols-3 gap-3 text-sm">
+<label class="text-xs">URL uji <input id="demo-url" value="https://example.com" class="border rounded px-2 py-1 text-sm w-full"></label>
+<label class="text-xs">HP A <select id="demo-a" class="border rounded px-2 py-1 text-sm w-full font-mono"></select></label>
+<label class="text-xs">HP B <select id="demo-b" class="border rounded px-2 py-1 text-sm w-full font-mono"></select></label>
+</div>
+<div class="mt-3 flex flex-wrap gap-2">
+<button onclick="setupDanJalan()" class="px-4 py-2 text-sm bg-purple-600 text-white rounded">Jalankan Real Chrome 2 HP</button>
+<button onclick="setupSaja()" class="px-3 py-2 text-sm bg-gray-100 rounded">Setup saja (tanpa jalan)</button>
+<a href="/api/orchestrator/devices/view" class="px-3 py-2 text-sm bg-gray-100 rounded">Kelola HP</a>
+</div>
+<p id="demo-pesan" class="text-sm mt-2 text-gray-600"></p>
+<div id="demo-link" class="mt-2 text-sm hidden space-y-1">
+<p><a id="link-runs" href="#" class="px-3 py-1 bg-green-600 text-white rounded">Lihat Runs</a></p>
+<p><a id="link-lap" href="#" class="text-blue-600 underline">Laporan + Export</a> &bull; <a id="link-sesi" href="#" class="text-blue-600 underline">Detail Sesi</a></p>
+</div>
+</div>
+<details class="bg-white shadow rounded-lg p-6 text-sm text-gray-600">
+<summary class="cursor-pointer font-medium text-gray-900">Kalau gagal di HP Xiaomi/Redmi (klik untuk buka)</summary>
+<p class="mt-2">Aktifkan di HP: Opsi pengembang &rarr; <b>USB debugging</b> + <b>Install via USB</b> + <b>USB debugging (Security settings)</b>. Saat jalan, ketuk <b>Allow/Install</b> di layar HP bila muncul popup Appium (sekali saja).</p>
+</details>
+</div>
+{% endblock %}
+{% block scripts %}
+<script>
+async function muatHP(){
+  const el=document.getElementById('adb-pesan'); const chips=document.getElementById('adb-chips');
+  const sa=document.getElementById('demo-a'); const sb=document.getElementById('demo-b');
+  try{
+    // Pastikan yang terdeteksi langsung terdaftar (1-klik UX).
+    await fetch('/api/orchestrator/devices/sync',{method:'POST'});
+    const r=await fetch('/api/orchestrator/devices/adb'); const d=await r.json();
+    const live=(d.live||[]).slice().sort();
+    if(!live.length){el.textContent='Tidak ada HP terdeteksi. Sambungkan ADB lalu refresh halaman ini.';chips.innerHTML='';sa.innerHTML='';sb.innerHTML='';return [];}
+    el.textContent=live.length+' HP siap dipakai:';
+    chips.innerHTML=live.map(s=>'<span class="px-2 py-1 rounded bg-green-100 text-green-800 font-mono">'+s+'</span>').join('');
+    sa.innerHTML=live.map(s=>'<option value="'+s+'">'+s+'</option>').join('');
+    sb.innerHTML=live.map(s=>'<option value="'+s+'">'+s+'</option>').join('');
+    if(live.length>1){sb.selectedIndex=1;}
+    return live;
+  }catch(e){el.textContent='Gagal memuat HP: '+e;return [];}
+}
+async function setupSaja(){
+  const el=document.getElementById('demo-pesan'); const box=document.getElementById('demo-link');
+  el.textContent='Menyiapkan sesi...'; box.classList.add('hidden');
+  const body={url:document.getElementById('demo-url').value, serial_a:document.getElementById('demo-a').value, serial_b:document.getElementById('demo-b').value, pair_label:'pair-real-2hp'};
+  const r=await fetch('/api/runs/demo/real-2device',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
+  const d=await r.json(); if(!r.ok){el.textContent='Gagal setup: '+JSON.stringify(d.detail||d);return;}
+  el.textContent='Sesi #'+d.session_id+' siap ('+d.device_a.adb_id+' + '+d.device_b.adb_id+').';
+  document.getElementById('link-runs').href=d.gui_runs; document.getElementById('link-lap').href=d.gui_laporan; document.getElementById('link-sesi').href=d.gui_sesi;
+  box.classList.remove('hidden'); return d;
+}
+async function setupDanJalan(){
+  const el=document.getElementById('demo-pesan'); const box=document.getElementById('demo-link');
+  const d=await setupSaja(); if(!d) return;
+  el.textContent='Sesi #'+d.session_id+' siap. Membuka Chrome di 2 HP (1-3 menit, lihat layar HP)...';
+  const r2=await fetch('/api/runs/sessions/'+d.session_id+'/run',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({mode:'real'})});
+  const h2=await r2.json(); if(!r2.ok){el.textContent='Gagal jalan: '+JSON.stringify(h2.detail||h2);return;}
+  el.textContent='Selesai: '+h2.ringkasan.passed+' passed, '+h2.ringkasan.failed+' failed. Buka Lihat Runs / Laporan.';
+}
+muatHP();
+</script>
+{% endblock %}

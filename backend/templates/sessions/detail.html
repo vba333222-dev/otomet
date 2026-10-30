@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% block title %}Sesi #{{ sesi.id }} - {{ sesi.pair_label or '' }}{% endblock %}
+{% block content %}
+<div class="space-y-6">
+<nav class="flex text-sm"><ol class="flex items-center space-x-2">
+<li><a href="/api/clients/{{ client.id }}/view" class="text-gray-400">{{ client.nama }}</a></li><li><span class="text-gray-300">/</span></li>
+<li><a href="/api/orchestrator/clients/{{ client.id }}/sessions/view" class="text-gray-400">Sesi</a></li><li><span class="text-gray-300">/</span></li>
+<li><span class="text-gray-900">#{{ sesi.id }}</span></li></ol></nav>
+<div class="bg-white shadow rounded-lg p-6">
+<h2 class="text-2xl font-bold">Sesi #{{ sesi.id }} {{ sesi.pair_label or '' }}</h2>
+<p class="text-xs text-gray-500 mt-1">Status {{ sesi.status }} &bull; dibuat {{ sesi.created_at }}</p>
+<div class="mt-3 grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm">
+<div class="border rounded p-3"><p class="font-medium">Device A</p><p class="font-mono">{{ dev_a.adb_id if dev_a else '-' }}</p><p class="text-xs text-gray-500">id {{ sesi.device_a_id }} &bull; {{ dev_a.status if dev_a else '?' }}</p></div>
+<div class="border rounded p-3"><p class="font-medium">Device B</p><p class="font-mono">{{ dev_b.adb_id if dev_b else '-' }}</p><p class="text-xs text-gray-500">id {{ sesi.device_b_id }} &bull; {{ dev_b.status if dev_b else '?' }}</p></div>
+</div>
+{% if sesi.status == 'running' %}
+<div class="mt-4 flex space-x-2">
+<button onclick="akhiri({{ sesi.id }}, false)" class="px-3 py-1 text-sm bg-green-600 text-white rounded">Selesaikan</button>
+<button onclick="akhiri({{ sesi.id }}, true)" class="px-3 py-1 text-sm bg-red-100 rounded">Batalkan</button>
+</div>
+{% endif %}
+<p id="sesi-pesan" class="text-sm mt-2 text-gray-600"></p>
+<p class="text-xs text-gray-500 mt-2">Anti-race pair: klaim data atomik + stagger start + semaphore klien (runner Phase 7). <a href="/api/runs/sessions/{{ sesi.id }}/runs/view" class="text-blue-600 underline">Lihat / jalankan Runs paralel</a>.</p>
+</div>
+{% if sesi.status == 'running' %}
+<div class="bg-white shadow rounded-lg p-6">
+<h3 class="font-medium mb-2">Tugaskan Skenario (gate recalibration wajib lolos)</h3>
+<div class="flex flex-wrap gap-2 items-end">
+<label class="text-xs">Device <select id="as-dev" class="border rounded px-2 py-1 text-sm"><option value="{{ sesi.device_a_id }}">A - {{ dev_a.adb_id if dev_a else '' }}</option><option value="{{ sesi.device_b_id }}">B - {{ dev_b.adb_id if dev_b else '' }}</option></select></label>
+<label class="text-xs">Skenario <select id="as-sken" class="border rounded px-2 py-1 text-sm">{% for s in [] %}{% endfor %}</select></label>
+<button onclick="tugaskan({{ sesi.id }})" class="px-3 py-1 text-sm bg-blue-600 text-white rounded">Tugaskan</button>
+</div>
+<p class="text-xs text-gray-500 mt-1">Fail-closed: beda klien / device bukan anggota / gate tertahan = ditolak.</p>
+<p id="assign-pesan" class="text-xs mt-1"></p>
+</div>
+{% endif %}
+<div class="bg-white shadow rounded-lg p-6">
+<h3 class="font-medium mb-2">Assignment ({{ assignments|length }})</h3>
+<div class="space-y-2">
+{% for a in assignments %}
+<div class="border rounded p-2 text-sm flex justify-between"><span class="font-mono">{{ a.adb_id }}</span><span>{{ a.nama_fungsi }} v{{ a.versi }}</span></div>
+{% else %}<p class="text-sm text-gray-500">Belum ada assignment.</p>{% endfor %}
+</div>
+</div>
+</div>
+{% endblock %}
+{% block scripts %}
+<script>
+async function akhiri(id, batal){const el=document.getElementById('sesi-pesan');const r=await fetch('/api/orchestrator/sessions/'+id+(batal?'/cancel':'/finish'),{method:'POST'});const d=await r.json();if(!r.ok){el.textContent='Gagal: '+JSON.stringify(d.detail||d);return;}location.reload();}
+async function tugaskan(sid){const dev=document.getElementById('as-dev').value;const sk=document.getElementById('as-sken').value;const el=document.getElementById('assign-pesan');if(!sk){el.textContent='Pilih skenario dulu.';return;}const r=await fetch('/api/orchestrator/sessions/'+sid+'/assign',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({device_id:parseInt(dev),scenario_id:parseInt(sk)})});const d=await r.json();if(!r.ok){el.textContent='Ditolak: '+JSON.stringify(d.detail||d);return;}location.reload();}
+(async function(){try{const cid={{ client.id }};const r=await fetch('/api/scenarios/client/'+cid);if(!r.ok)return;const data=await r.json();const sel=document.getElementById('as-sken');if(!sel)return;const seen={};data.forEach(s=>{if(seen[s.nama_fungsi])return;seen[s.nama_fungsi]=1;const o=document.createElement('option');o.value=s.id;o.textContent=s.nama_fungsi+' v'+s.versi;sel.appendChild(o);});}catch(e){}})();
+</script>
+{% endblock %}
